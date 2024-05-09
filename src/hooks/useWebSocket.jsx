@@ -6,7 +6,7 @@ const useWebSocket = (url) => {
   const statusRef = useRef("connecting");
 
   console.log("Window Protocol -", window.location.protocol);
-  const wsProtocol = window.location.protocol === "https" ? "wss" : "ws";
+  const wsProtocol = window.location.protocol === "https:" ? "wss" : "ws";
   console.log("WS Protocol -", wsProtocol);
 
   const domain = url.split("://")[1];
