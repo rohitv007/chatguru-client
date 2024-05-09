@@ -10,7 +10,7 @@ const useWebSocket = (url) => {
   // console.log(domain);
 
   const serverUrl = `${wsProtocol}://${domain}`;
-  // console.log(serverUrl);
+  console.log(serverUrl);
 
   useEffect(() => {
     const ws = new WebSocket(serverUrl);
