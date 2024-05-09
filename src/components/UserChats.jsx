@@ -7,7 +7,7 @@ import axios from "../api/axios";
 
 const UserChats = ({ currUserId, data }) => {
   const { user } = useAuth();
-  const { socket } = useWebSocket(import.meta.env.VITE_SERVER_URL);
+  const { socket } = useWebSocket(import.meta.env.APP_SERVER_URL);
   const messageRef = useRef(null);
   const divUnderMessages = useRef();
 
@@ -43,7 +43,6 @@ const UserChats = ({ currUserId, data }) => {
 
   const sendMessage = async (e) => {
     e.preventDefault();
-    console.log("submitting");
 
     if (messageRef.current.value.trim() !== "" || file !== null) {
       // creating newMessage object to be send
@@ -72,7 +71,7 @@ const UserChats = ({ currUserId, data }) => {
           },
         ]);
       }
-      console.log(`Message sent - ${JSON.stringify(newMessage)}`);
+      // console.log(`Message sent - ${JSON.stringify(newMessage)}`);
       messageRef.current.value = "";
       setFile(null);
     }

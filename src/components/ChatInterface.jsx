@@ -10,7 +10,7 @@ const ChatInterface = () => {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [offlineUsers, setOfflineUsers] = useState([]);
   const { user, logoutUser } = useAuth();
-  const { messageData } = useWebSocket(import.meta.env.VITE_SERVER_URL);
+  const { messageData } = useWebSocket(import.meta.env.APP_SERVER_URL);
 
   // to set all users which are online
   useEffect(() => {

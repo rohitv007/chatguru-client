@@ -36,7 +36,6 @@ const Login = () => {
       // console.log(err);
       setIsSubmitting(false);
       if (err?.response?.data) {
-        console.log(err);
         const errorMessage = err.response.data.message;
         setError(
           errorMessage ?? "Oops! Something went wrong. Please try again later"

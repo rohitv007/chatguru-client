@@ -16,14 +16,9 @@ build
 logs
 **/*.backup.*
 **/*.back.*
-*.sublime*
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+**/*.env*
 
-# xyz
+# non-source
 psd
 thumb
 sketch
