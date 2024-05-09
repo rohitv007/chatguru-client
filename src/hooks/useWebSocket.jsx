@@ -5,14 +5,14 @@ const useWebSocket = (url) => {
   const [messageData, setMessageData] = useState(null);
   const statusRef = useRef("connecting");
 
+  console.log("Window Protocol -", window.location.protocol);
   const wsProtocol = window.location.protocol === "https" ? "wss" : "ws";
-  console.log(wsProtocol);
-  
+  console.log("WS Protocol -", wsProtocol);
+
   const domain = url.split("://")[1];
-  console.log(domain);
 
   const serverUrl = `${wsProtocol}://${domain}`;
-  console.log(serverUrl);
+  console.log("URL -", serverUrl);
 
   useEffect(() => {
     const ws = new WebSocket(serverUrl);
