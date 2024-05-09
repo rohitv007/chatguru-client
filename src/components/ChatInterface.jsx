@@ -44,9 +44,10 @@ const ChatInterface = () => {
   }, [onlineUsers, user]);
 
   // populating all other users except the user itself
-  // console.log(onlineUsers);
+  console.log("ALL -", onlineUsers);  
   const onlineUsersExceptCurrUser = structuredClone(onlineUsers);
   delete onlineUsersExceptCurrUser[user?.id];
+  console.log("ALL EXCEPT CURRENT -", onlineUsersExceptCurrUser);
 
   // selecting a user from Contacts list
   const selectUser = (userId) => setCurrentUserId(userId);
@@ -156,7 +157,7 @@ const ChatInterface = () => {
         <div className="bg-green-100 flex flex-grow h-full items-center justify-center">
           <header className="text-center text-2xl text-gray-400">
             <div>Namaste {user?.username}&nbsp;🙏</div>
-            <div>&larr; Select a guru to&nbsp;start a&nbsp;conversation</div>
+            <div>&larr; Select a Guru to&nbsp;start a&nbsp;conversation</div>
           </header>
         </div>
       )}
