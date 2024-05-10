@@ -7,7 +7,7 @@ const Home = () => {
   // console.log("HOME DATA", user?.id);
 
   return !isAuth ? (
-    <Navigate to="/login" />
+    <Navigate to="/login" replace />
   ) : (
     <main className="flex flex-row relative h-screen">
       <ChatInterface />
