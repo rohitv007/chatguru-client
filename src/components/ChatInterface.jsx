@@ -41,10 +41,10 @@ const ChatInterface = () => {
       // console.log(offlineData);
       setOfflineUsers(offlineData);
     })();
+    console.log("ALL ONLINE -", onlineUsers);
   }, [onlineUsers, user]);
 
   // populating all other users except the user itself
-  console.log("ALL -", onlineUsers);  
   const onlineUsersExceptCurrUser = structuredClone(onlineUsers);
   delete onlineUsersExceptCurrUser[user?.id];
   console.log("ALL EXCEPT CURRENT -", onlineUsersExceptCurrUser);
