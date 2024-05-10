@@ -12,7 +12,7 @@ const useWebSocket = (url) => {
   const domain = url.split("://")[1];
 
   const serverUrl = `${wsProtocol}://${domain}`;
-  // console.log("URL -", serverUrl);
+  console.log("URL -", serverUrl);
 
   useEffect(() => {
     const ws = new WebSocket(serverUrl);
@@ -24,7 +24,7 @@ const useWebSocket = (url) => {
     ws.addEventListener("close", () => (statusRef.current = "close")); // CLOSE
 
     ws.addEventListener("message", (e) => {
-      // console.log(e);
+      console.log('event data', e.data);
       setMessageData(e.data);
     }); // MESSAGE
 

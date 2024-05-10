@@ -39,7 +39,7 @@ const ChatInterface = () => {
 
       const offlineData = {};
       offlineArr.forEach((u) => (offlineData[u._id] = u.username));
-      // console.log(offlineData);
+      console.log('offline users =>', offlineData);
       setOfflineUsers(offlineData);
     })();
     console.log("ALL ONLINE -", onlineUsers);
