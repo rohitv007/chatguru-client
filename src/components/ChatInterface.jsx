@@ -15,23 +15,23 @@ const ChatInterface = () => {
   // to set all users which are online
   useEffect(() => {
     const users = {};
-    console.log(messageData);
+    console.log('messageData =>', messageData);
     const parsedUsers = JSON.parse(messageData);
     if (parsedUsers?.online) {
       parsedUsers?.online.forEach(({ userId, username }) => {
         users[userId] = username;
-        console.log(users);
         setOnlineUsers(users);
       });
     }
+    console.log('USERS =>', users);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messageData]);
 
   useEffect(() => {
-    (async function () {
+    (async function () {  
       const res = await axios.get("/people");
       const allUsers = res.data;
-      console.log(res.data);
+      console.log('API data =>', res.data);
       const offlineArr = allUsers
         .filter((u) => u.id !== user?.id)
         .filter((p) => !Object.keys(onlineUsers).includes(p._id));
@@ -47,7 +47,6 @@ const ChatInterface = () => {
 
   // populating all other users except the user itself
   const onlineUsersExceptCurrUser = {...onlineUsers};
-  console.log('user id', user?.id);
   delete onlineUsersExceptCurrUser[user?.id];
   console.log("ALL EXCEPT CURRENT -", onlineUsersExceptCurrUser);
 
