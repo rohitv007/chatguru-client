@@ -14,21 +14,22 @@ const ChatInterface = () => {
 
   // to set all users which are online
   useEffect(() => {
-    const users = {};
-    console.log('messageData =>', messageData);
-    const parsedUsers = JSON.parse(messageData);
-    if (parsedUsers?.online) {
-      parsedUsers?.online.forEach(({ userId, username }) => {
-        users[userId] = username;
-        setOnlineUsers(users);
-      });
+    if (messageData) {
+      console.log('messageData =>', messageData);
+      const parsedUsers = JSON.parse(messageData);
+      const onlineUsersMap = parsedUsers?.online?.reduce((acc, { userId, username }) => {
+        acc[userId] = username;
+        return acc;
+      }, {});
+      if (onlineUsersMap) {
+        setOnlineUsers(onlineUsersMap);
+        console.log('ONLINE-USERS =>', onlineUsersMap);
+      }
     }
-    console.log('USERS =>', users);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messageData]);
 
   useEffect(() => {
-    (async function () {  
+    (async function () {  1
       const res = await axios.get("/people");
       const allUsers = res.data;
       console.log('API data =>', res.data);
