@@ -17,6 +17,7 @@
     "axios": "^1.6.8",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "ldrs": "^1.0.1",
     "lodash": "^4.17.21",
     "lucide-react": "^0.376.0",
     "react": "^18.2.0",

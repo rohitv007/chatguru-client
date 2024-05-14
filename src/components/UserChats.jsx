@@ -3,16 +3,18 @@ import PropTypes from "prop-types";
 import useWebSocket from "../hooks/useWebSocket";
 import { useAuth } from "../hooks/useAuth";
 import { uniqBy } from "lodash";
+import "ldrs/momentum";
 import axios from "../api/axios";
 
 const UserChats = ({ currUserId, data }) => {
   const { user } = useAuth();
-  const { socket } = useWebSocket(import.meta.env.APP_SERVER_URL);
+  const { socket } = useWebSocket();
   const messageRef = useRef(null);
   const divUnderMessages = useRef();
 
   const [messages, setMessages] = useState([]);
   const [file, setFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     // console.log(data);
@@ -31,13 +33,20 @@ const UserChats = ({ currUserId, data }) => {
   }, [messages]);
 
   useEffect(() => {
-    const getSelectedUserMessages = async () => {
-      const res = await axios.get(`/messages/${currUserId}`);
-      // console.log(res.data);
-      setMessages(res.data);
-    };
-    if (currUserId) {
-      getSelectedUserMessages();
+    setIsLoading(true);
+    try {
+      const getSelectedUserMessages = async () => {
+        const res = await axios.get(`/messages/${currUserId}`);
+        // console.log(res.data);
+        setMessages(res.data);
+      };
+      if (currUserId) {
+        getSelectedUserMessages();
+      }
+    } catch (error) {
+      console.log("Error while fetching messages");
+    } finally {
+      setIsLoading(false);
     }
   }, [currUserId]);
 
@@ -80,8 +89,12 @@ const UserChats = ({ currUserId, data }) => {
   const uniqueMessages = uniqBy(messages, "_id");
   // console.log(uniqueMessages);
 
-  return (
-    <div className="chat__section relative h-full bg-slate-100 w-2/3 lg:w-3/4 xl:w-4/5">
+  return isLoading ? (
+    <div className="h-full bg-slate-100 w-2/3 lg:w-3/4 xl:w-4/5 flex justify-center items-center">
+      <l-momentum color={"orange"}></l-momentum>
+    </div>
+  ) : (
+    <div className="chat__section h-full bg-slate-100 w-2/3 lg:w-3/4 xl:w-4/5 relative">
       <div className="contact__chats overflow-auto scrollbar-hide absolute top-0 left-0 right-0 bottom-16 flex flex-col flex-grow">
         {/* chat-section of the selected user */}
         {uniqueMessages.map((message) => {

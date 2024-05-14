@@ -1,30 +1,33 @@
 import { useEffect, useRef, useState } from "react";
 
-const useWebSocket = (url) => {
+const useWebSocket = () => {
   const [socket, setSocket] = useState(null);
   const [messageData, setMessageData] = useState(null);
   const statusRef = useRef("connecting");
 
-  // console.log(window.location.protocol);
-  const wsProtocol = window.location.protocol === "https:" ? "wss" : "ws";
-  // console.log(wsProtocol);
-
-  const domain = url.split("://")[1];
-
-  const serverUrl = `${wsProtocol}://${domain}`;
-  console.log("URL -", serverUrl);
+  const serverUrl = import.meta.env.APP_WS_SERVER_URL;
+  // console.log("URL -", serverUrl);
 
   useEffect(() => {
     const ws = new WebSocket(serverUrl);
 
-    ws.addEventListener("open", () => (statusRef.current = "open")); // OPEN
+    ws.addEventListener("open", () => {
+      // console.log("open");
+      statusRef.current = "open";
+    }); // OPEN
 
-    ws.addEventListener("error", () => (statusRef.current = "error")); //ERROR
+    ws.addEventListener("error", () => {
+      // console.log("error in ws client");
+      statusRef.current = "error";
+    }); //ERROR
 
-    ws.addEventListener("close", () => (statusRef.current = "close")); // CLOSE
+    ws.addEventListener("close", () => {
+      // console.log("close");
+      statusRef.current = "close";
+    }); // CLOSE
 
     ws.addEventListener("message", (e) => {
-      console.log('event data', e.data);
+      // console.log("event data", e.data);
       setMessageData(e.data);
     }); // MESSAGE
 
