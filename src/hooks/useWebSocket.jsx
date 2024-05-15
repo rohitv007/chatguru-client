@@ -27,14 +27,14 @@ const useWebSocket = () => {
     }); // CLOSE
 
     ws.addEventListener("message", (e) => {
-      // console.log("event data", e.data);
+      console.log("event data", e.data);
       setMessageData(e.data);
     }); // MESSAGE
 
     setSocket(ws);
 
     return () => {
-      ws.close();
+      if (ws.readyState === 1) ws.close();
     };
   }, [serverUrl]);
 
