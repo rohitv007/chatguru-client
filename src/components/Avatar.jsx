@@ -17,7 +17,7 @@ const Avatar = ({ userId, username, online }) => {
   const colorIndex = userIdBase10 % colors.length;
   const color = colors[colorIndex];
 
-  return userId && username ? (
+  return (
     <div className={"w-8 h-8 relative rounded-full flex items-center " + color}>
       <div className="text-center w-full opacity-70">{username?.[0]}</div>
       {online && (
@@ -27,7 +27,7 @@ const Avatar = ({ userId, username, online }) => {
         <div className="absolute w-3 h-3 bg-gray-400 bottom-0 right-0 rounded-full border border-white"></div>
       )}
     </div>
-  ) : null;
+  );
 };
 export default Avatar;
 
