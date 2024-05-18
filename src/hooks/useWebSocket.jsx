@@ -12,22 +12,22 @@ const useWebSocket = () => {
     const ws = new WebSocket(serverUrl);
 
     ws.addEventListener("open", () => {
-      console.log("open");
+      // console.log("open");
       statusRef.current = "open";
     }); // OPEN
 
     ws.addEventListener("error", () => {
-      console.log("error in ws client");
+      // console.log("error in ws client");
       statusRef.current = "error";
     }); //ERROR
 
     ws.addEventListener("close", () => {
-      console.log("close");
+      // console.log("close");
       statusRef.current = "close";
     }); // CLOSE
 
     ws.addEventListener("message", (e) => {
-      console.log("event data", e.data);
+      // console.log("event data", e.data);
       setMessageData(e.data);
     }); // MESSAGE
 
