@@ -98,7 +98,7 @@ const ChatInterface = () => {
                 onClick={() => selectUser(userId)}
               >
                 <Avatar
-                  userId
+                  userId={userId}
                   username={onlineUsersExceptCurrUser[userId]}
                   online={true}
                 />
@@ -118,7 +118,7 @@ const ChatInterface = () => {
                 onClick={() => selectUser(userId)}
               >
                 <Avatar
-                  userId
+                  userId={userId}
                   username={offlineUsers[userId]}
                   online={false}
                 />
