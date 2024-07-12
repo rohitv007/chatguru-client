@@ -13,13 +13,13 @@ export const AuthProvider = ({ children }) => {
   const [authState, setAuthState] = useState({ user: null, isAuth: false });
   const [isLoading, setIsLoading] = useState(true);
 
-  const authUser = async (data) => {
+  const authUser = (data) => {
     localStorage.setItem("accessToken", data.accessToken);
     setAuthState({ user: data, isAuth: true });
     setIsLoading(false);
   };
 
-  const logoutUser = async () => {
+  const logoutUser = () => {
     localStorage.removeItem("accessToken");
     setAuthState({ user: null, isAuth: false });
     setIsLoading(false);

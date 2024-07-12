@@ -43,7 +43,7 @@ const AuthPage = () => {
     };
 
     try {
-      const res = await axios.post(`/api/user/register`, body, { headers });
+      const res = await axios.post(`/user/register`, body, { headers });
       // console.log(res);
       if (res.data.success) {
         // console.log("REGISTER DATA =>", res.data);
@@ -71,7 +71,7 @@ const AuthPage = () => {
     };
 
     try {
-      const { data } = await axios.post(`/api/user/login`, body, { headers });
+      const { data } = await axios.post(`/user/login`, body, { headers });
       // console.log(res);
       if (data.success) {
         // console.log("LOGIN DATA =>", data);

@@ -7,12 +7,13 @@ export const getSender = (currUser, users) => {
   return currUser.id === users[0]._id ? users[1].username : users[0].username;
 };
 
-export const groupMessagesByDate = (messages) => {
+// Group messages by date. Eg - today, yesterday, 
+export const setMessagesByDate = (messages) => {
   const currentYear = new Date().getFullYear();
   const groups = {};
 
   messages.forEach((message) => {
-    const messageDate = new Date(message.createdAt);
+    const messageDate = new Date(message.updatedAt);
     const messageYear = messageDate.getFullYear();
 
     const today = new Date();
@@ -38,3 +39,7 @@ export const groupMessagesByDate = (messages) => {
 
   return groups;
 };
+
+export const setMessageTimeFormat = (value) => {
+  return value.toString().padStart(2, '0');
+}

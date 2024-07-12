@@ -1,35 +1,25 @@
-import { useEffect, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import axios from "../api/axios";
-import Chats from "./Chats";
 import { useAuth } from "../hooks/useAuth";
 import Avatar from "./Avatar";
-import UserList from "./UserList";
+import ChatList from "./ChatList";
 import { getSender } from "../helpers/helpers";
+import SingleChat from "./SingleChat";
+import { ChatContext } from "../context/ChatContext";
 // import useSocket from "../hooks/useSocket";
 
 const Interface = () => {
-  const [currChatId, setCurrChatId] = useState(null);
-  const [allChats, setAllChats] = useState([]);
   const { user, logoutUser } = useAuth();
   const [showSearch, setShowSearch] = useState(false);
+  const { chats, currentChat, selectCurrentChat } = useContext(ChatContext);
   // const { socket, status } = useSocket();
-  // const [currChat, setCurrChat] = useState(null);
 
-  // set all chats
-  useEffect(() => {
-    async function getAllChats() {
-      const { data } = await axios.get("/api/chat");
-      // console.log("CHATS =>", data);
-      setAllChats(data);
-    }
-    getAllChats();
-  }, []);
-
-  const selectChat = (chatId) => setCurrChatId(chatId);
+  // memoize all chats
+  const memoizedAllChats = useMemo(() => chats, [chats]);
 
   const handleLogout = async () => {
     try {
-      const { data } = await axios.get("/api/user/logout");
+      const { data } = await axios.get("/user/logout");
       if (data.success) {
         // console.log(data.message);
         logoutUser();
@@ -43,34 +33,43 @@ const Interface = () => {
 
   return (
     <>
-      <div className="contacts__section bg-white flex flex-col w-1/3 md:w-1/3 lg:w-1/4 xl:w-1/5 border-r h-screen border-black">
+      {/* Left panel - Chats and Users */}
+      <div className="chats__section bg-white flex flex-col w-1/3 md:w-1/3 lg:w-1/4 xl:w-1/5 border-r h-screen border-black">
         <div className="flex-grow">
-          <UserList showSearch={showSearch} setShowSearch={setShowSearch} />
+          {/* Display UserList */}
+          <ChatList
+            showSearch={showSearch}
+            setShowSearch={setShowSearch}
+            // selectChat={selectChat}
+          />
+          {/* Display all chats */}
           <div
-            className={`p-2 ${
+            className={`p-2 overflow-y-auto max-h-[calc(100dvh-128px)] custom-scrollbar ${
               showSearch && "hidden"
-            } overflow-y-auto max-h-[calc(100dvh-128px)] custom-scrollbar`}
+            }`}
           >
-            {allChats.map((chat) => {
+            {memoizedAllChats.map((chat) => {
               // console.log(chat);
               return (
                 <div
                   key={chat?._id}
                   className={`hover:bg-slate-200 flex items-center gap-2 py-4 px-2 border-b border-gray-300 cursor-pointer ${
-                    chat?._id == currChatId && "bg-orange-100"
+                    chat?._id === currentChat._id && "bg-orange-100"
                   }`}
-                  onClick={() => selectChat(chat?._id)}
+                  // onClick={() => selectChat(chat?._id)}
+                  onClick={() => selectCurrentChat(chat)}
                 >
                   <Avatar userImage={chat?.users[0].pic} online={true} />
                   <span className="text-xl">
                     {chat.isGroup ? chat.chatName : getSender(user, chat.users)}
-                    {/* If group-chat, then return chatName else return the opposite user */}
+                    {/* If group-chat, then return chatName else return the opposite-user/sender */}
                   </span>
                 </div>
               );
             })}
           </div>
         </div>
+        {/* Footer section with user info and logout button */}
         <div className="p-3 h-fit flex justify-between items-center border-t-2 border-gray-300">
           <div className="flex gap-0.5">
             <div className="mt-0.5">
@@ -101,8 +100,9 @@ const Interface = () => {
           </div>
         </div>
       </div>
-      {currChatId ? (
-        <Chats chatId={currChatId} />
+      {/* Right panel - Chat Messages */}
+      {Object.keys(currentChat).length > 0 ? (
+        <SingleChat />
       ) : (
         <div className="bg-green-100 flex flex-grow h-full items-center justify-center">
           <header className="text-center text-2xl text-gray-400">

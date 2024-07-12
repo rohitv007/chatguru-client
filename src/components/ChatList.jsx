@@ -4,7 +4,7 @@ import axios from "../api/axios";
 import { debounce } from "lodash";
 import Avatar from "./Avatar";
 
-const UserList = ({ showSearch, setShowSearch }) => {
+const ChatList = ({ showSearch, setShowSearch, selectChat }) => {
   const [allUsers, setAllUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchValue, setSearchValue] = useState("");
@@ -12,7 +12,7 @@ const UserList = ({ showSearch, setShowSearch }) => {
   useEffect(() => {
     async function getAllUsers() {
       try {
-        const { data } = await axios.get("/api/user/all");
+        const { data } = await axios.get("/user/all");
         // console.log("ALL USERS =>", data);
         setAllUsers(data);
         setFilteredUsers(data);
@@ -33,16 +33,16 @@ const UserList = ({ showSearch, setShowSearch }) => {
   }, [searchValue, allUsers]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debounceSearch = useCallback(debounce(handleSearch, 500), [
+  const debounceSearch = useCallback(debounce(handleSearch, 300), [
     handleSearch,
   ]);
 
   const selectUser = async (userId) => {
-    console.log(`Create new chat with user - ${userId}`);
-
+    // console.log(`Chat with user - ${userId}`);
     try {
-      const { data } = await axios.post("/api/chat/", { userId });
-      console.log(data);
+      const { data } = await axios.post("/chat", { userId });
+      // console.log("ChatList chat data =>", data);
+      selectChat(data._id);
     } catch (error) {
       console.log("Error creating new chat\n", error);
     }
@@ -68,7 +68,7 @@ const UserList = ({ showSearch, setShowSearch }) => {
                 src="https://img.icons8.com/color/48/smart.png"
                 alt="icon"
               />
-              <div className="hidden sm:flex text-xl font-semibold text-orange-500">
+              <div className="text-xl font-semibold text-orange-500">
                 Chat&nbsp;Guru
               </div>
             </div>
@@ -97,7 +97,7 @@ const UserList = ({ showSearch, setShowSearch }) => {
           <hr className="border border-gray-300" />
         </>
       ) : (
-        <div className="">
+        <>
           <div className="flex mx-1 my-4 px-2 py-1 justify-between items-center rounded-full border-2 border-orange-500">
             <input
               className="w-full border border-transparent outline-transparent px-2 py-0 rounded-full"
@@ -125,29 +125,30 @@ const UserList = ({ showSearch, setShowSearch }) => {
             </button>
           </div>
           <hr className="border border-gray-300" />
-          <div className="p-2 overflow-y-auto max-h-[calc(100dvh-128px)] custom-scrollbar">
+          <div className="p-2 m-0 overflow-y-auto max-h-[calc(100dvh-128px)] custom-scrollbar">
             {filteredUsers.map((user) => (
-              <ul className="" key={user._id}>
+              <div key={user._id}>
                 <button
                   type="button"
                   onClick={() => selectUser(user?._id)}
-                  className="w-full rounded-full flex items-center my-2 gap-2 py-2 px-2 border border-gray-300 cursor-pointer"
+                  className='w-full rounded-full shadow-md flex items-center gap-2 my-2 p-2 border border-gray-300 cursor-pointer'
                 >
                   <Avatar userImage={user.pic} online={true} />
-                  <h3 className="">{user.username}</h3>
+                  <h3>{user.username}</h3>
                 </button>
-              </ul>
+              </div>
             ))}
           </div>
-        </div>
+        </>
       )}
     </>
   );
 };
 
-export default UserList;
+export default ChatList;
 
-UserList.propTypes = {
+ChatList.propTypes = {
   showSearch: PropTypes.bool.isRequired,
   setShowSearch: PropTypes.func.isRequired,
+  selectChat: PropTypes.func,
 };
