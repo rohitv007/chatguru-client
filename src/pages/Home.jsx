@@ -21,7 +21,7 @@ const Home = () => {
   }
 
   return (
-    <main className="flex flex-row relative h-screen">
+    <main className="flex flex-row relative h-fit">
       <Interface />
     </main>
   );

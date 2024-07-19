@@ -1,13 +1,15 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import axios from "../api/axios";
 import { debounce } from "lodash";
 import Avatar from "./Avatar";
+import { ChatContext } from "../context/ChatContext.jsx";
 
-const ChatList = ({ showSearch, setShowSearch, selectChat }) => {
+const ChatList = ({ showSearch, setShowSearch }) => {
   const [allUsers, setAllUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchValue, setSearchValue] = useState("");
+  const { selectCurrentChat } = useContext(ChatContext);
 
   useEffect(() => {
     async function getAllUsers() {
@@ -42,11 +44,10 @@ const ChatList = ({ showSearch, setShowSearch, selectChat }) => {
     try {
       const { data } = await axios.post("/chat", { userId });
       // console.log("ChatList chat data =>", data);
-      selectChat(data._id);
+      selectCurrentChat(data);
     } catch (error) {
       console.log("Error creating new chat\n", error);
     }
-
     setShowSearch(false);
   };
 
@@ -72,7 +73,7 @@ const ChatList = ({ showSearch, setShowSearch, selectChat }) => {
                 Chat&nbsp;Guru
               </div>
             </div>
-            <div>
+            <div className="flex">
               <button
                 className="px-2"
                 onClick={() => setShowSearch(!showSearch)}
@@ -131,7 +132,7 @@ const ChatList = ({ showSearch, setShowSearch, selectChat }) => {
                 <button
                   type="button"
                   onClick={() => selectUser(user?._id)}
-                  className='w-full rounded-full shadow-md flex items-center gap-2 my-2 p-2 border border-gray-300 cursor-pointer'
+                  className="w-full rounded-full shadow-md flex items-center gap-2 my-2 p-2 border border-gray-300 cursor-pointer"
                 >
                   <Avatar userImage={user.pic} online={true} />
                   <h3>{user.username}</h3>
@@ -150,5 +151,4 @@ export default ChatList;
 ChatList.propTypes = {
   showSearch: PropTypes.bool.isRequired,
   setShowSearch: PropTypes.func.isRequired,
-  selectChat: PropTypes.func,
 };

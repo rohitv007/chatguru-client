@@ -10,14 +10,11 @@ module.exports = {
   ],
   prefix: "",
   theme: {
-    container: {
-      center: true,
-      padding: "2rem",
+    extend: {
       screens: {
+        "xs": "480px",
         "2xl": "1400px",
       },
-    },
-    extend: {
       borderWidth: {
         3: "3px",
         4: "4px",

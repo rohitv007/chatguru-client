@@ -3,9 +3,10 @@ import axios from "../api/axios";
 import { useAuth } from "../hooks/useAuth";
 import Avatar from "./Avatar";
 import ChatList from "./ChatList";
-import { getSender } from "../helpers/helpers";
+import { getChatHeaderDetails } from "../helpers/helpers";
 import SingleChat from "./SingleChat";
 import { ChatContext } from "../context/ChatContext";
+import { groupImage } from "../helpers/constants";
 // import useSocket from "../hooks/useSocket";
 
 const Interface = () => {
@@ -32,17 +33,14 @@ const Interface = () => {
   };
 
   return (
-    <>
+    <div className="flex flex-grow overflow-y-hidden custom-scrollbar h-screen">
       {/* Left panel - Chats and Users */}
-      <div className="chats__section bg-white flex flex-col w-1/3 md:w-1/3 lg:w-1/4 xl:w-1/5 border-r h-screen border-black">
+      <div
+        className={`chats__section bg-white flex flex-col min-w-[350px] sm:w-2/5 md:w-1/3 lg:w-1/4 xl:w-1/5 border-r h-screen border border-black`}
+      >
         <div className="flex-grow">
-          {/* Display UserList */}
-          <ChatList
-            showSearch={showSearch}
-            setShowSearch={setShowSearch}
-            // selectChat={selectChat}
-          />
           {/* Display all chats */}
+          <ChatList showSearch={showSearch} setShowSearch={setShowSearch} />
           <div
             className={`p-2 overflow-y-auto max-h-[calc(100dvh-128px)] custom-scrollbar ${
               showSearch && "hidden"
@@ -50,19 +48,26 @@ const Interface = () => {
           >
             {memoizedAllChats.map((chat) => {
               // console.log(chat);
+              const { username, userImage } = getChatHeaderDetails(
+                user,
+                chat.users
+              );
+
               return (
                 <div
                   key={chat?._id}
                   className={`hover:bg-slate-200 flex items-center gap-2 py-4 px-2 border-b border-gray-300 cursor-pointer ${
                     chat?._id === currentChat._id && "bg-orange-100"
                   }`}
-                  // onClick={() => selectChat(chat?._id)}
                   onClick={() => selectCurrentChat(chat)}
                 >
-                  <Avatar userImage={chat?.users[0].pic} online={true} />
+                  <Avatar
+                    online={true}
+                    userImage={chat.isGroup ? groupImage : userImage}
+                  />
                   <span className="text-xl">
-                    {chat.isGroup ? chat.chatName : getSender(user, chat.users)}
                     {/* If group-chat, then return chatName else return the opposite-user/sender */}
+                    {chat.isGroup ? chat.chatName : username}
                   </span>
                 </div>
               );
@@ -101,17 +106,19 @@ const Interface = () => {
         </div>
       </div>
       {/* Right panel - Chat Messages */}
-      {Object.keys(currentChat).length > 0 ? (
-        <SingleChat />
-      ) : (
-        <div className="bg-green-100 flex flex-grow h-full items-center justify-center">
-          <header className="text-center text-2xl text-gray-400">
-            <div>Namaste {user?.username}&nbsp;🙏</div>
-            <div>&larr; Select a Guru to&nbsp;start a&nbsp;conversation</div>
-          </header>
-        </div>
-      )}
-    </>
+      <div className="flex flex-grow min-w-[350px]">
+        {Object.keys(currentChat).length > 0 ? (
+          <SingleChat />
+        ) : (
+          <div className="bg-green-100 flex flex-grow h-full items-center justify-center">
+            <div className="flex flex-col text-center text-2xl text-gray-400">
+              <p>Namaste {user?.username}&nbsp;🙏</p>
+              <p>Select a Guru to&nbsp;start a&nbsp;conversation</p>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 

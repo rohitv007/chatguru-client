@@ -62,11 +62,11 @@ const SingleChat = () => {
   };
 
   return isLoading ? (
-    <div className="h-full bg-slate-100 w-2/3 lg:w-3/4 xl:w-4/5 flex justify-center items-center">
+    <div className="h-full bg-slate-100 flex flex-grow justify-center items-center">
       <l-momentum color={"orange"}></l-momentum>
     </div>
   ) : (
-    <div className="chat__section h-full bg-slate-100 w-2/3 lg:w-3/4 xl:w-4/5 relative">
+    <div className="chat__section h-full bg-slate-100 flex flex-grow relative">
       <ChatHeader chat={currentChat} />
       <div className="contact__chats overflow-auto scrollbar-hide absolute top-16 left-0 right-0 bottom-16 flex flex-col flex-grow">
         {Object.entries(setMessagesByDate(messages)).map(

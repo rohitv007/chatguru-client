@@ -96,7 +96,7 @@ const AuthPage = () => {
   };
 
   return (
-    <div className="bg-white h-screen flex items-center justify-center flex-col text-center">
+    <div className="bg-white h-screen flex items-center justify-center flex-col text-center overflow-auto custom-scrollbar">
       <Tabs className="w-[400px]" defaultValue="login">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger

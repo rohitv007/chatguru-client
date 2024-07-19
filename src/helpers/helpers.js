@@ -1,13 +1,18 @@
 // comparing 'Chat' users array with currently logged in user
 // Return - opposite user
 
-export const getSender = (currUser, users) => {
-  //   console.log(users);
-  //   console.log(currUser);
-  return currUser.id === users[0]._id ? users[1].username : users[0].username;
+export const getChatHeaderDetails = (currUser, users) => {
+  // console.log(currUser);
+  // console.log(users);
+
+  const isCurrUser = currUser.id === users[0]._id;
+  const username = isCurrUser ? users[1].username : users[0].username;
+  const userImage = isCurrUser ? users[1].pic : users[0].pic;
+
+  return { username, userImage };
 };
 
-// Group messages by date. Eg - today, yesterday, 
+// Group messages by date. Eg - today, yesterday,
 export const setMessagesByDate = (messages) => {
   const currentYear = new Date().getFullYear();
   const groups = {};
@@ -41,5 +46,5 @@ export const setMessagesByDate = (messages) => {
 };
 
 export const setMessageTimeFormat = (value) => {
-  return value.toString().padStart(2, '0');
-}
+  return value.toString().padStart(2, "0");
+};
