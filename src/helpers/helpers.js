@@ -1,7 +1,7 @@
 // comparing 'Chat' users array with currently logged in user
 // Return - opposite user
 
-export const getChatHeaderDetails = (currUser, users) => {
+export const getRecipientDetails = (currUser, users) => {
   // console.log(currUser);
   // console.log(users);
 

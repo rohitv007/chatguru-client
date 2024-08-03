@@ -1,13 +1,13 @@
 import PropTypes from "prop-types";
 import Avatar from "./Avatar";
-import { getChatHeaderDetails } from "../helpers/helpers";
+import { getRecipientDetails } from "../helpers/helpers";
 import { useAuth } from "../hooks/useAuth";
 
 const ChatHeader = ({ chat }) => {
   const { user } = useAuth();
   // console.log(chat);
 
-  const { username, userImage } = getChatHeaderDetails(user, chat?.users);
+  const { username, userImage } = getRecipientDetails(user, chat?.users);
 
   return (
     <div className="flex items-center bg-orange-100 shadow-md border-b border-black w-full px-1 py-2 h-16 z-10 gap-x-4">
