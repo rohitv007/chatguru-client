@@ -62,11 +62,11 @@ const SingleChat = () => {
   };
 
   return isLoading ? (
-    <div className="h-full bg-slate-100 flex flex-grow justify-center items-center">
+    <div className="h-full bg-slate-50 flex flex-grow justify-center items-center">
       <l-momentum color={"orange"}></l-momentum>
     </div>
   ) : (
-    <div className="chat__section h-full bg-slate-100 flex flex-grow relative">
+    <div className="chat__section h-full bg-slate-50 flex flex-grow relative">
       <ChatHeader chat={currentChat} />
       <div className="contact__chats overflow-auto scrollbar-hide absolute top-16 left-0 right-0 bottom-16 flex flex-col flex-grow">
         {Object.entries(setMessagesByDate(messages)).map(
@@ -86,10 +86,10 @@ const SingleChat = () => {
                 >
                   <div
                     className={
-                      "flex items-end justify-between max-w-full rounded text-gray-50 text-wrap break-words " +
+                      "flex items-end justify-between max-w-full shadow-lg rounded text-gray-50 text-wrap break-words " +
                       (user?.id === message?.sender?._id
-                        ? "bg-blue-400"
-                        : "bg-gray-400")
+                        ? "bg-green-400"
+                        : "bg-gray-500")
                     }
                   >
                     <p className="max-w-96 inline-block p-2 pr-1 whitespace-pre-wrap break-words font-medium text-sm">
@@ -116,7 +116,7 @@ const SingleChat = () => {
         <form
           encType="multipart/form-data"
           id="messageBox"
-          className="flex items-center w-full bg-gray-500 px-4 py-2"
+          className="flex items-center w-full bg-blue-300 px-4 py-2"
           onSubmit={sendMessage}
         >
           <label
@@ -147,7 +147,7 @@ const SingleChat = () => {
           </label>
           <textarea
             form="messageBox"
-            className="hide-scrollbar flex-1 h-11 px-4 py-2 rounded-full resize-none text-gray-600 bg-gray-300 outline-none placeholder-gray-600"
+            className="hide-scrollbar flex-1 h-11 px-4 py-2 rounded-full resize-none text-gray-600 bg-blue-50 outline-none placeholder-gray-600"
             id="msgInput"
             name="msgInput"
             value={messageContent}

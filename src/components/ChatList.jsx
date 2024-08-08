@@ -5,12 +5,19 @@ import { useAuth } from "../hooks/useAuth";
 import Avatar from "./Avatar";
 import { groupImage } from "../helpers/constants";
 import PropTypes from "prop-types";
+import { PanelViewContext } from "../context/PanelViewContext";
 
 const ChatList = ({ showSearch }) => {
   const { user } = useAuth();
   const { chats, currentChat, selectCurrentChat } = useContext(ChatContext);
+  const { width, viewPanel } = useContext(PanelViewContext);
   // memoize all chats
   const memoizedAllChats = useMemo(() => chats, [chats]);
+
+  const handleShowChat = (chat) => {
+    selectCurrentChat(chat);
+    viewPanel();
+  };
 
   return (
     <div
@@ -25,10 +32,12 @@ const ChatList = ({ showSearch }) => {
         return (
           <div
             key={chat?._id}
-            className={`hover:bg-slate-200 flex items-center gap-2 py-4 px-2 border-b border-gray-300 cursor-pointer ${
-              chat?._id === currentChat._id && "bg-orange-100"
+            className={`hover:bg-gray-100 flex items-center gap-2 py-4 px-2 border-b border-gray-300 cursor-pointer ${
+              width > 480 && chat?._id === currentChat._id
+                ? "bg-orange-100"
+                : "bg-none"
             }`}
-            onClick={() => selectCurrentChat(chat)}
+            onClick={() => handleShowChat(chat)}
           >
             <Avatar
               online={true}
@@ -45,8 +54,9 @@ const ChatList = ({ showSearch }) => {
   );
 };
 
-export default ChatList
+export default ChatList;
 
 ChatList.propTypes = {
   showSearch: PropTypes.bool.isRequired,
+  showCurrentChat: PropTypes.func,
 };

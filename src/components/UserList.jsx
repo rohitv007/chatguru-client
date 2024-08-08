@@ -4,12 +4,14 @@ import axios from "../api/axios";
 import { debounce } from "lodash";
 import Avatar from "./Avatar";
 import { ChatContext } from "../context/ChatContext.jsx";
+import { PanelViewContext } from "../context/PanelViewContext";
 
 const UserList = ({ showSearch, setShowSearch }) => {
   const [allUsers, setAllUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const { selectCurrentChat } = useContext(ChatContext);
+  const { viewPanel } = useContext(PanelViewContext);
 
   useEffect(() => {
     async function getAllUsers() {
@@ -45,6 +47,7 @@ const UserList = ({ showSearch, setShowSearch }) => {
       const { data } = await axios.post("/chat", { userId });
       // console.log("UserList chat data =>", data);
       selectCurrentChat(data);
+      viewPanel();
     } catch (error) {
       console.log("Error creating new chat\n", error);
     }
@@ -75,15 +78,12 @@ const UserList = ({ showSearch, setShowSearch }) => {
               </div>
             </div>
             <div className="flex">
-              <button
-                className="px-2"
-                onClick={() => setShowSearch(!showSearch)}
-              >
+              <button className="px-2" onClick={() => setShowSearch(true)}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
-                  strokeWidth={1.5}
+                  strokeWidth={2}
                   stroke="currentColor"
                   className="size-6"
                 >
@@ -101,21 +101,42 @@ const UserList = ({ showSearch, setShowSearch }) => {
       ) : (
         <>
           {/* Search Bar Input */}
-          <div className="flex mx-1 my-4 px-2 py-1 justify-between items-center rounded-full border-2 border-orange-500">
-            <input
-              className="w-full border border-transparent outline-transparent px-2 py-0 rounded-full"
-              type="text"
-              placeholder="Search user"
-              onChange={(e) => setSearchValue(e.target.value)}
-              value={searchValue}
-              autoFocus
-            />
-            <button className="px-2" onClick={() => setShowSearch(!showSearch)}>
+          <div className="flex py-4 px-2 justify-between items-center">
+            <div className="flex flex-1 items-center justify-normal rounded-full border-2 border-orange-500">
+              <input
+                className="w-full px-4 py-2 rounded-full focus:border-orange-500 focus:outline-none"
+                type="text"
+                placeholder="Search user"
+                onChange={(e) => setSearchValue(e.target.value)}
+                value={searchValue}
+                autoFocus
+              />
+              {searchValue && (
+                <button className="pr-2" onClick={() => setSearchValue("")}>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="gray"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="white"
+                    className="size-6"
+                    onClick={() => setSearchValue("")}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                    />
+                  </svg>
+                </button>
+              )}
+            </div>
+            <button className="m-0 px-1" onClick={() => setShowSearch(false)}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                strokeWidth={1.5}
+                strokeWidth={2}
                 stroke="currentColor"
                 className="size-6"
               >

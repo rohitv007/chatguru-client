@@ -13,4 +13,4 @@ const NoChatsPanel = () => {
   );
 };
 
-export default NoChatsPanel
+export default NoChatsPanel;
