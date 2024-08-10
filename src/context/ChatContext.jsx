@@ -20,7 +20,7 @@ export const ChatProvider = ({ children }) => {
       setAllChats(data);
     }
     getAllChats();
-  }, []);
+  }, [chats]);
 
   const selectCurrentChat = useCallback((chat) => {
     // console.log(chat);

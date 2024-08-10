@@ -4,16 +4,19 @@ import { useAuth } from "../hooks/useAuth";
 import { setMessagesByDate, setMessageTimeFormat } from "../helpers/helpers";
 import ChatHeader from "./ChatHeader";
 import { ChatContext } from "../context/ChatContext";
+import useSocket from "../hooks/useSocket";
 
 // memoized 'SingleChat' component
 const SingleChat = () => {
   const [messageContent, setMessageContent] = useState("");
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
   // const [error, setError] = useState("");
   const divUnderMessages = useRef();
   const { user } = useAuth();
   const { currentChat } = useContext(ChatContext);
+  const { socket, status } = useSocket();
 
   // console.log("SINGLE CHAT =>", currentChat);
   const chatId = currentChat?._id;
@@ -43,22 +46,44 @@ const SingleChat = () => {
     }
   }, [messages]);
 
+  useEffect(() => {
+    if (!socket || status !== "connected") return;
+
+    socket.on("newMessage", (newMessage) => {
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+    });
+
+    return () => {
+      socket.off("newMessage");
+    };
+  }, [socket, status]);
+
   const sendMessage = async (e) => {
     e.preventDefault();
-    try {
-      const newMessage = {
-        chatId,
-        content: messageContent,
-      };
 
-      const { data } = await axios.post("/message", newMessage);
-      // console.log(data);
-      setMessages((prevMessages) => [...prevMessages, data]);
-      setMessageContent("");
-    } catch (error) {
-      console.log(error);
+    if (messageContent.trim()) {
+      try {
+        const newMessage = {
+          chatId,
+          content: messageContent,
+          file: selectedFile,
+        };
+
+        const { data } = await axios.post("/message", newMessage);
+        // console.log(data);
+        await socket.emit("sendMessage", data);
+        setMessageContent("");
+      } catch (error) {
+        console.log(error);
+      }
+      console.log("New Message =>", messageContent);
     }
-    console.log("New Message =>", messageContent);
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setSelectedFile(file);
+    console.log("Selected file:", file);
   };
 
   return isLoading ? (
@@ -88,8 +113,8 @@ const SingleChat = () => {
                     className={
                       "flex items-end justify-between max-w-full shadow-lg rounded text-gray-50 text-wrap break-words " +
                       (user?.id === message?.sender?._id
-                        ? "bg-green-400"
-                        : "bg-gray-500")
+                        ? "bg-blue-400"
+                        : "bg-gray-400")
                     }
                   >
                     <p className="max-w-96 inline-block p-2 pr-1 whitespace-pre-wrap break-words font-medium text-sm">
@@ -116,19 +141,18 @@ const SingleChat = () => {
         <form
           encType="multipart/form-data"
           id="messageBox"
-          className="flex items-center w-full bg-blue-300 px-4 py-2"
+          className="w-full flex items-center justify-center bg-gray-600 px-4 py-2"
           onSubmit={sendMessage}
         >
           <label
-            htmlFor="file"
+            htmlFor="fileInput"
             className="flex items-center justify-center mr-2 p-2 rounded-full cursor-not-allowed hover:bg-orange-400"
           >
             <input
               type="file"
-              name="file"
-              id="file"
-              className="hidden"
-              disabled
+              name="fileInput"
+              id="fileInput"
+              onChange={handleFileChange}
             />
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -148,8 +172,8 @@ const SingleChat = () => {
           <textarea
             form="messageBox"
             className="hide-scrollbar flex-1 h-11 px-4 py-2 rounded-full resize-none text-gray-600 bg-blue-50 outline-none placeholder-gray-600"
-            id="msgInput"
-            name="msgInput"
+            id="textInput"
+            name="textInput"
             value={messageContent}
             onChange={(e) => setMessageContent(e.target.value)}
             onKeyDown={(e) => {

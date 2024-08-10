@@ -1,27 +1,40 @@
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
+const SOCKET_URL = import.meta.env.APP_SERVER_URL;
 
 const useSocket = () => {
-  const wsURL = import.meta.env.APP_HTTP_SERVER_URL;
   const [socket, setSocket] = useState(null);
   const [status, setStatus] = useState("connecting");
 
-  // console.log(wsURL);
-
   useEffect(() => {
-    const ws = io(wsURL);
+    const ws = io(SOCKET_URL, {
+      withCredentials: true,
+    });
 
     ws.on("connect", () => {
       setStatus("connected");
       console.log(`Connected to server: ${ws.id}`);
     });
 
+    ws.on("disconnect", () => {
+      setStatus("disconnected");
+      console.log("Disconnected from server");
+    });
+
+    ws.on("connect_error", (err) => {
+      setStatus("error");
+      console.error("Connection error:", err);
+    });
+
     setSocket(ws);
 
     return () => {
+      ws.off("connect");
+      ws.off("disconnect");
+      ws.off("connect_error");
       ws.disconnect();
     };
-  }, [wsURL]);
+  }, []);
 
   return { socket, status };
 };

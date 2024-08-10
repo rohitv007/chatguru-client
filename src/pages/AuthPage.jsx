@@ -140,7 +140,7 @@ const AuthPage = () => {
                 <input
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  type="text"
+                  type="email"
                   placeholder="Email"
                   className="block w-full rounded-sm p-2 mb-1 border"
                   id="email"

@@ -25,7 +25,7 @@ const UserList = ({ showSearch, setShowSearch }) => {
       }
     }
     getAllUsers();
-  }, []);
+  }, [allUsers]);
 
   const handleSearch = useCallback(() => {
     // console.log("FILTERED USERS", filteredUsers);
@@ -42,7 +42,7 @@ const UserList = ({ showSearch, setShowSearch }) => {
   ]);
 
   const selectUser = async (userId) => {
-    // console.log(`Chat with user - ${userId}`);
+    // console.log(`create/select chat with user - ${userId}`);
     try {
       const { data } = await axios.post("/chat", { userId });
       // console.log("UserList chat data =>", data);
