@@ -1,37 +1,37 @@
-import { useState } from "react";
-import { useAuth } from "../hooks/useAuth";
-import { Link } from "react-router-dom";
-import axios from "../api/axios";
+import { useState } from 'react';
+import { useAuth } from '../hooks/useAuth';
+import { Link } from 'react-router-dom';
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "../../shadcn_components/ui/card";
+} from '../../shadcn_components/ui/card';
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "../../shadcn_components/ui/tabs";
+} from '../../shadcn_components/ui/tabs';
+import axios from 'axios';
 
 const AuthPage = () => {
   // register state variables
-  const [username, setUsername] = useState("");
-  const [regPassword, setRegPassword] = useState("");
-  const [email, setEmail] = useState("");
-  const [regError, setRegError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
+  const [username, setUsername] = useState('');
+  const [regPassword, setRegPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [regError, setRegError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const [isRegSubmitting, setIsRegSubmitting] = useState(false);
 
   // login state variables
-  const [userPayload, setUserPayload] = useState("");
-  const [loginPassword, setLoginPassword] = useState("");
-  const [loginError, setLoginError] = useState("");
+  const [userPayload, setUserPayload] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
   const [isLoginSubmitting, setIsLoginSubmitting] = useState(false);
 
-  const { authUser } = useAuth();
+  const { loginUser } = useAuth();
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -39,7 +39,7 @@ const AuthPage = () => {
 
     const body = JSON.stringify({ username, email, regPassword });
     const headers = {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     };
 
     try {
@@ -55,7 +55,7 @@ const AuthPage = () => {
       if (err?.response?.data) {
         const errorMessage = err.response.data.message;
         setRegError(
-          errorMessage ?? "Oops! Something went wrong. Please try again later"
+          errorMessage ?? 'Oops! Something went wrong. Please try again later',
         );
       }
     }
@@ -65,23 +65,15 @@ const AuthPage = () => {
     e.preventDefault();
     setIsLoginSubmitting(true);
 
-    const body = JSON.stringify({ userPayload, loginPassword });
-    const headers = {
-      "Content-Type": "application/json",
-    };
+    const body = { userPayload, loginPassword };
 
     try {
-      const { data } = await axios.post(`/user/login`, body, { headers });
-      // console.log(res);
-      if (data.success) {
-        // console.log("LOGIN DATA =>", data);
-        authUser(data);
-
+      loginUser(body).then(() => {
         // Reset form values
-        setUserPayload("");
-        setLoginPassword("");
-        setLoginError("");
-      }
+        setUserPayload('');
+        setLoginPassword('');
+        setLoginError('');
+      });
     } catch (err) {
       // console.log(err);
       setIsLoginSubmitting(false);
@@ -89,7 +81,7 @@ const AuthPage = () => {
         console.log(err);
         const errorMessage = err.response.data.message;
         setLoginError(
-          errorMessage ?? "Oops! Something went wrong. Please try again later"
+          errorMessage ?? 'Oops! Something went wrong. Please try again later',
         );
       }
     }
@@ -180,7 +172,7 @@ const AuthPage = () => {
             </CardContent>
             <CardFooter className="justify-center py-4 px-2 pt-1">
               <p className="text-sm font-medium">
-                Already have an account? Go to{" "}
+                Already have an account? Go to{' '}
                 <Link to="/" className="text-blue-500">
                   Login
                 </Link>
@@ -235,8 +227,8 @@ const AuthPage = () => {
                   className="bg-green-400 hover:bg-green-500 text-white block mx-auto rounded-sm p-2 w-[90%]"
                   onClick={(e) => {
                     e.preventDefault();
-                    setUserPayload("guest");
-                    setLoginPassword("guest1234");
+                    setUserPayload('guest');
+                    setLoginPassword('guest1234');
                   }}
                 >
                   Get Guest Credentials

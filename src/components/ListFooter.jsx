@@ -1,17 +1,17 @@
-import axios from "../api/axios";
-import { useAuth } from "../hooks/useAuth";
+import api from '../api/axios';
+import { useAuth } from '../hooks/useAuth';
 
 const ListFooter = () => {
   const { user, logoutUser } = useAuth();
 
   const handleLogout = async () => {
     try {
-      const { data } = await axios.get("/user/logout");
+      const { data } = await api.get('/user/logout');
       if (data.success) {
         // console.log(data.message);
         logoutUser();
       } else {
-        throw new Error("Error while logging out");
+        throw new Error('Error while logging out');
       }
     } catch (err) {
       console.log(err);
@@ -51,4 +51,4 @@ const ListFooter = () => {
   );
 };
 
-export default ListFooter
+export default ListFooter;

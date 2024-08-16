@@ -1,37 +1,49 @@
-import { useCallback, useContext, useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import axios from "../api/axios";
-import { debounce } from "lodash";
-import Avatar from "./Avatar";
-import { ChatContext } from "../context/ChatContext.jsx";
-import { PanelViewContext } from "../context/PanelViewContext";
+import { useCallback, useContext, useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { debounce } from 'lodash';
+import Avatar from './Avatar';
+import { ChatContext } from '../context/ChatContext.jsx';
+import { PanelViewContext } from '../context/PanelViewContext';
+import api from '../api/axios';
+import useSocket from '../hooks/useSocket';
+// import useSocket from '../hooks/useSocket';
 
 const UserList = ({ showSearch, setShowSearch }) => {
   const [allUsers, setAllUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
-  const [searchValue, setSearchValue] = useState("");
+  const [searchValue, setSearchValue] = useState('');
   const { selectCurrentChat } = useContext(ChatContext);
   const { viewPanel } = useContext(PanelViewContext);
+  const { socket } = useSocket();
 
   useEffect(() => {
     async function getAllUsers() {
       try {
-        const { data } = await axios.get("/user/all");
+        const { data } = await api.get('/user/all');
         // console.log("ALL USERS =>", data);
         setAllUsers(data);
-        setFilteredUsers(data);
       } catch (error) {
-        console.error("Error fetching users:", error);
+        console.error('Error fetching users:', error);
       }
     }
     getAllUsers();
-  }, [allUsers]);
+
+    if (socket) {
+      socket.on('userAdded', (newUser) => {
+        setAllUsers((prevUsers) => [...prevUsers, newUser]);
+      });
+
+      return () => {
+        socket.off('userAdded');
+      };
+    }
+  }, [socket]);
 
   const handleSearch = useCallback(() => {
     // console.log("FILTERED USERS", filteredUsers);
     // console.log("searching");
     const filtered = allUsers.filter((user) =>
-      user.username.toLowerCase().includes(searchValue.toLowerCase())
+      user.username.toLowerCase().includes(searchValue.toLowerCase()),
     );
     setFilteredUsers(filtered);
   }, [searchValue, allUsers]);
@@ -44,12 +56,14 @@ const UserList = ({ showSearch, setShowSearch }) => {
   const selectUser = async (userId) => {
     // console.log(`create/select chat with user - ${userId}`);
     try {
-      const { data } = await axios.post("/chat", { userId });
+      const { data } = await api.post('/chat', { userId });
       // console.log("UserList chat data =>", data);
       selectCurrentChat(data);
       viewPanel();
+      console.log('create/access chat', data);
+      socket.emit('join chat', data._id);
     } catch (error) {
-      console.log("Error creating new chat\n", error);
+      console.log('Error creating new chat\n', error);
     }
     setShowSearch(false);
   };
@@ -112,7 +126,7 @@ const UserList = ({ showSearch, setShowSearch }) => {
                 autoFocus
               />
               {searchValue && (
-                <button className="pr-2" onClick={() => setSearchValue("")}>
+                <button className="pr-2" onClick={() => setSearchValue('')}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="gray"
@@ -120,7 +134,7 @@ const UserList = ({ showSearch, setShowSearch }) => {
                     strokeWidth={1.5}
                     stroke="white"
                     className="size-6"
-                    onClick={() => setSearchValue("")}
+                    onClick={() => setSearchValue('')}
                   >
                     <path
                       strokeLinecap="round"

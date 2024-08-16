@@ -1,21 +1,22 @@
-import { useEffect, useRef, useState, useContext } from "react";
-import axios from "../api/axios";
-import { useAuth } from "../hooks/useAuth";
-import { setMessagesByDate, setMessageTimeFormat } from "../helpers/helpers";
-import ChatHeader from "./ChatHeader";
-import { ChatContext } from "../context/ChatContext";
-import useSocket from "../hooks/useSocket";
+import { useEffect, useRef, useState, useContext } from 'react';
+import { useAuth } from '../hooks/useAuth';
+import { setMessagesByDate, setMessageTimeFormat } from '../helpers/helpers';
+import ChatHeader from './ChatHeader';
+import { ChatContext } from '../context/ChatContext';
+import useSocket from '../hooks/useSocket';
+import api from '../api/axios';
 
 // memoized 'SingleChat' component
 const SingleChat = () => {
-  const [messageContent, setMessageContent] = useState("");
+  const [messageContent, setMessageContent] = useState('');
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   // const [error, setError] = useState("");
-  const divUnderMessages = useRef();
-  const { user } = useAuth();
   const { currentChat } = useContext(ChatContext);
+  const divUnderMessages = useRef();
+
+  const { user } = useAuth();
   const { socket, status } = useSocket();
 
   // console.log("SINGLE CHAT =>", currentChat);
@@ -25,7 +26,7 @@ const SingleChat = () => {
     const fetchMessages = async () => {
       setIsLoading(true);
       try {
-        const { data } = await axios.get(`/message/${chatId}`);
+        const { data } = await api.get(`/message/${chatId}`);
         // console.log(data);
         setMessages(data);
       } catch (error) {
@@ -42,19 +43,19 @@ const SingleChat = () => {
   useEffect(() => {
     const div = divUnderMessages.current;
     if (div) {
-      div.scrollIntoView({ behavior: "smooth", block: "end" });
+      div.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }
   }, [messages]);
 
   useEffect(() => {
-    if (!socket || status !== "connected") return;
+    if (!socket || status !== 'connected') return;
 
-    socket.on("newMessage", (newMessage) => {
+    socket.on('newMessage', (newMessage) => {
       setMessages((prevMessages) => [...prevMessages, newMessage]);
     });
 
     return () => {
-      socket.off("newMessage");
+      socket.off('newMessage');
     };
   }, [socket, status]);
 
@@ -69,26 +70,26 @@ const SingleChat = () => {
           file: selectedFile,
         };
 
-        const { data } = await axios.post("/message", newMessage);
+        const { data } = await api.post('/message', newMessage);
         // console.log(data);
-        await socket.emit("sendMessage", data);
-        setMessageContent("");
+        await socket.emit('sendMessage', data);
+        setMessageContent('');
       } catch (error) {
         console.log(error);
       }
-      console.log("New Message =>", messageContent);
+      // console.log('New Message =>', messageContent);
     }
   };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setSelectedFile(file);
-    console.log("Selected file:", file);
+    // console.log('Selected file:', file);
   };
 
   return isLoading ? (
     <div className="h-full bg-slate-50 flex flex-grow justify-center items-center">
-      <l-momentum color={"orange"}></l-momentum>
+      <l-momentum color={'orange'}></l-momentum>
     </div>
   ) : (
     <div className="chat__section h-full bg-slate-50 flex flex-grow relative">
@@ -104,17 +105,17 @@ const SingleChat = () => {
                 <div
                   key={message._id}
                   className={`flex mx-2 my-1 p-1 ${
-                    user?.id === message?.sender?._id
-                      ? "justify-end"
-                      : "justify-start"
+                    user?._id === message?.sender?._id
+                      ? 'justify-end'
+                      : 'justify-start'
                   }`}
                 >
                   <div
                     className={
-                      "flex items-end justify-between max-w-full shadow-lg rounded text-gray-50 text-wrap break-words " +
-                      (user?.id === message?.sender?._id
-                        ? "bg-blue-400"
-                        : "bg-gray-400")
+                      'flex items-end justify-between max-w-full shadow-lg rounded text-gray-50 text-wrap break-words ' +
+                      (user?._id === message?.sender?._id
+                        ? 'bg-blue-400'
+                        : 'bg-gray-400')
                     }
                   >
                     <p className="max-w-96 inline-block p-2 pr-1 whitespace-pre-wrap break-words font-medium text-sm">
@@ -122,18 +123,18 @@ const SingleChat = () => {
                     </p>
                     <p className="font-extralight text-[10px] p-1 pr-2 max-w-10">
                       {setMessageTimeFormat(
-                        new Date(message.updatedAt).getHours()
+                        new Date(message.updatedAt).getHours(),
                       )}
                       :
                       {setMessageTimeFormat(
-                        new Date(message.updatedAt).getMinutes()
+                        new Date(message.updatedAt).getMinutes(),
                       )}
                     </p>
                   </div>
                 </div>
               ))}
             </div>
-          )
+          ),
         )}
         <div ref={divUnderMessages}></div>
       </div>
@@ -146,13 +147,14 @@ const SingleChat = () => {
         >
           <label
             htmlFor="fileInput"
-            className="flex items-center justify-center mr-2 p-2 rounded-full cursor-not-allowed hover:bg-orange-400"
+            className="flex items-center justify-center mr-2 p-2 rounded-full cursor-pointer hover:bg-orange-400"
           >
             <input
               type="file"
               name="fileInput"
               id="fileInput"
               onChange={handleFileChange}
+              className={selectedFile ? 'block' : 'hidden'}
             />
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -177,7 +179,7 @@ const SingleChat = () => {
             value={messageContent}
             onChange={(e) => setMessageContent(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
+              if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 sendMessage(e);
               }

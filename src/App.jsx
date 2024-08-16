@@ -6,13 +6,37 @@ import AuthPage from "./pages/AuthPage";
 import ProtectedRoute from "./components/ProtectedRoutes";
 
 function App() {
-  const { isAuth } = useAuth();
+  const { isAuth, isLoading } = useAuth();
   // console.log(user, isAuth);
-  
+
+  const Loading = () => (
+    <div className="bg-slate-50 flex items-center justify-center h-screen">
+      <l-momentum color={"orange"}></l-momentum>
+    </div>
+  );
+
   return (
     <Routes>
-      <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>}/>
-      <Route path="/login" element={isAuth ? <Navigate to="/" replace /> : <AuthPage />}/>
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <Home />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/login"
+        element={
+          isLoading ? (
+            <Loading />
+          ) : isAuth ? (
+            <Navigate to="/" replace />
+          ) : (
+            <AuthPage />
+          )
+        }
+      />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

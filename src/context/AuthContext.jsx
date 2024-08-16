@@ -1,11 +1,12 @@
-import { createContext, useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import axios from "../api/axios";
+import { createContext, useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import axios from 'axios';
+import api from '../api/axios';
 
 export const AuthContext = createContext({
   authState: null,
   isLoading: true,
-  authUser: () => {},
+  loginUser: () => {},
   logoutUser: () => {},
 });
 
@@ -13,43 +14,62 @@ export const AuthProvider = ({ children }) => {
   const [authState, setAuthState] = useState({ user: null, isAuth: false });
   const [isLoading, setIsLoading] = useState(true);
 
-  const authUser = (data) => {
-    localStorage.setItem("accessToken", data.accessToken);
-    setAuthState({ user: data, isAuth: true });
-    setIsLoading(false);
+  const loginUser = async (credentials) => {
+    setIsLoading(true);
+    try {
+      const { data } = await axios.post(`/user/login`, credentials, {
+        'Content-Type': 'application/json',
+      });
+      // console.log(data);
+
+      if (data.success) {
+        setAuthState({ user: data.user, isAuth: true });
+        localStorage.setItem('accessToken', JSON.stringify(data.accessToken));
+      } else {
+        console.error(data.message);
+      }
+    } catch (error) {
+      console.error('Login failed', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const logoutUser = () => {
-    localStorage.removeItem("accessToken");
     setAuthState({ user: null, isAuth: false });
+    localStorage.removeItem('accessToken');
+  };
+
+  const checkAuthAccess = async () => {
+    setIsLoading(true);
+    const token = JSON.parse(localStorage.getItem('accessToken'));
+
+    if (token) {
+      try {
+        const { data } = await api.get('/profile');
+        // console.log(data);
+
+        if (data.success && token === data.accessToken) {
+          setAuthState({ user: data.user, isAuth: true });
+        } else {
+          logoutUser();
+        }
+      } catch (error) {
+        console.error('Auth check failed', error);
+        logoutUser();
+      }
+    }
     setIsLoading(false);
   };
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
-    accessToken && setAuthState({ user: null, isAuth: true });
-
-    (async function () {
-      try {
-        const res = await axios.get("/profile");
-        // console.log("CONTEXT DATA =>", res.data);
-        authUser(res.data);
-      } catch (error) {
-        if (error.response && error.response.status === 401) {
-          console.log("Unauthorized access. Redirecting to login page...");
-        } else {
-          console.error("Error fetching profile:", error);
-        }
-        logoutUser();
-      } finally {
-        setIsLoading(false);
-      }
-    })();
-  }, [authState.isAuth]);
+    checkAuthAccess();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <AuthContext.Provider
-      value={{ ...authState, isLoading, authUser, logoutUser }}
+      value={{ ...authState, isLoading, loginUser, logoutUser }}
     >
       {children}
     </AuthContext.Provider>

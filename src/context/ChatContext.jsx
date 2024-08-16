@@ -1,6 +1,7 @@
-import { createContext, useCallback, useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import axios from "../api/axios";
+import { createContext, useCallback, useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import api from '../api/axios';
+import useSocket from '../hooks/useSocket';
 
 export const ChatContext = createContext({
   chats: [],
@@ -11,16 +12,29 @@ export const ChatContext = createContext({
 export const ChatProvider = ({ children }) => {
   const [chats, setAllChats] = useState([]);
   const [currentChat, setCurrentChat] = useState({});
+  const { socket } = useSocket();
 
   // set all chats
-  useEffect(() => {
-    async function getAllChats() {
-      const { data } = await axios.get("/chat");
-      // console.log("CHATS =>", data);
+  const getAllChats = useCallback(async () => {
+    try {
+      const { data } = await api.get('/chat');
       setAllChats(data);
+    } catch (error) {
+      console.error('Error fetching chats:', error);
     }
+  }, []);
+
+  useEffect(() => {
     getAllChats();
-  }, [chats]);
+
+    if (socket) {
+      socket.on('chat accessed', getAllChats);
+
+      return () => {
+        socket.off('chat accessed', getAllChats);
+      };
+    }
+  }, [socket, getAllChats]);
 
   const selectCurrentChat = useCallback((chat) => {
     // console.log(chat);

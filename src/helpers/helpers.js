@@ -1,13 +1,13 @@
 // comparing 'Chat' users array with currently logged in user
 // Return - opposite user
 
-export const getRecipientDetails = (currUser, users) => {
-  // console.log(currUser);
+export const getRecipientDetails = (user, users) => {
+  // console.log(user);
   // console.log(users);
 
-  const isCurrUser = currUser.id === users[0]._id;
-  const username = isCurrUser ? users[1].username : users[0].username;
-  const userImage = isCurrUser ? users[1].pic : users[0].pic;
+  const recipient = user._id === users[0]._id ? users[1] : users[0];
+  const username = recipient.username;
+  const userImage = recipient.pic;
 
   return { username, userImage };
 };
