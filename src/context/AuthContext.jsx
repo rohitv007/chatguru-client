@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
 
       if (data.success) {
         setAuthState({ user: data.user, isAuth: true });
-        localStorage.setItem('accessToken', JSON.stringify(data.accessToken));
+        localStorage.setItem('accessToken', data.accessToken);
       } else {
         console.error(data.message);
       }
@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuthAccess = async () => {
     setIsLoading(true);
-    const token = JSON.parse(localStorage.getItem('accessToken'));
+    const token = localStorage.getItem('accessToken');
 
     if (token) {
       try {

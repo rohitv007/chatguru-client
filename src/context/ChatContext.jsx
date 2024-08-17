@@ -19,6 +19,7 @@ export const ChatProvider = ({ children }) => {
     try {
       const { data } = await api.get('/chat');
       setAllChats(data);
+      // console.log('ALL CHATS =>', data);
     } catch (error) {
       console.error('Error fetching chats:', error);
     }
