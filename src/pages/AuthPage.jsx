@@ -17,27 +17,49 @@ import {
 import axios from 'axios';
 
 const AuthPage = () => {
-  // register state variables
-  const [username, setUsername] = useState('');
-  const [regPassword, setRegPassword] = useState('');
-  const [email, setEmail] = useState('');
+  // register form data
+  const [registerFormData, setRegisterFormData] = useState({
+    username: '',
+    email: '',
+    password: '',
+  });
   const [regError, setRegError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [isRegSubmitting, setIsRegSubmitting] = useState(false);
 
-  // login state variables
-  const [userPayload, setUserPayload] = useState('');
-  const [loginPassword, setLoginPassword] = useState('');
+  // login form data
+  const [loginFormData, setLoginFormData] = useState({
+    userInput: '',
+    password: '',
+  });
   const [loginError, setLoginError] = useState('');
   const [isLoginSubmitting, setIsLoginSubmitting] = useState(false);
 
   const { loginUser } = useAuth();
 
+  const handleRegisterForm = (e) => {
+    const { name, value } = e.target;
+
+    setRegisterFormData({
+      ...registerFormData,
+      [name]: value,
+    });
+  };
+
+  const handleLoginForm = (e) => {
+    const { name, value } = e.target;
+
+    setLoginFormData({
+      ...loginFormData,
+      [name]: value,
+    });
+  };
+
   const handleRegister = async (e) => {
     e.preventDefault();
     setIsRegSubmitting(true);
 
-    const body = JSON.stringify({ username, email, regPassword });
+    const body = { ...registerFormData };
     const headers = {
       'Content-Type': 'application/json',
     };
@@ -46,7 +68,6 @@ const AuthPage = () => {
       const res = await axios.post(`/user/register`, body, { headers });
       // console.log(res);
       if (res.data.success) {
-        // console.log("REGISTER DATA =>", res.data);
         setSuccessMessage(res.data.message);
       }
     } catch (err) {
@@ -65,25 +86,22 @@ const AuthPage = () => {
     e.preventDefault();
     setIsLoginSubmitting(true);
 
-    const body = { userPayload, loginPassword };
-
+    const body = { ...loginFormData };
     try {
-      loginUser(body).then(() => {
-        // Reset form values
-        setUserPayload('');
-        setLoginPassword('');
-        setLoginError('');
+      await Promise.resolve(loginUser(body));
+
+      // Reset form
+      setLoginFormData({
+        userInput: '',
+        password: '',
       });
-    } catch (err) {
-      // console.log(err);
+    } catch (error) {
+      // console.log(error);
+      setLoginError(
+        error?.response?.data?.message || 'Login failed. Please try again.',
+      );
+    } finally {
       setIsLoginSubmitting(false);
-      if (err?.response?.data) {
-        console.log(err);
-        const errorMessage = err.response.data.message;
-        setLoginError(
-          errorMessage ?? 'Oops! Something went wrong. Please try again later',
-        );
-      }
     }
   };
 
@@ -104,6 +122,75 @@ const AuthPage = () => {
             Create Account
           </TabsTrigger>
         </TabsList>
+        <TabsContent value="login">
+          <Card>
+            <CardHeader className="py-4 px-2">
+              <CardTitle>Login</CardTitle>
+              {/* <CardDescription>
+                Login below to dive into Chat Guru 👨‍🏫
+              </CardDescription> */}
+            </CardHeader>
+            <CardContent className="py-4 px-2 pb-1">
+              <form
+                method="POST"
+                className="w-[280px] mx-auto"
+                onSubmit={handleLogin}
+              >
+                <input
+                  id="userInput"
+                  name="userInput"
+                  type="text"
+                  placeholder="Username/Email"
+                  value={loginFormData.userInput}
+                  onChange={handleLoginForm}
+                  className="block w-full rounded-sm p-2 mb-1 border"
+                  autoComplete="username"
+                  disabled={isLoginSubmitting}
+                  required
+                />
+                <input
+                  id="loginPassword"
+                  name="password"
+                  type="password"
+                  placeholder="Password"
+                  value={loginFormData.password}
+                  onChange={handleLoginForm}
+                  className="block w-full rounded-sm p-2 mb-6 border"
+                  autoComplete="current-password"
+                  disabled={isLoginSubmitting}
+                  required
+                />
+                <button
+                  className="bg-orange-400 hover:bg-orange-500 text-white block mx-auto rounded-sm mb-1 p-2 w-[90%]"
+                  disabled={isLoginSubmitting}
+                  type="submit"
+                >
+                  Login
+                </button>
+                <button
+                  type="button"
+                  className="bg-green-400 hover:bg-green-500 text-white block mx-auto rounded-sm p-2 w-[90%]"
+                  onClick={() => {
+                    setLoginFormData({
+                      userInput: 'guest',
+                      password: 'guest1234',
+                    });
+                  }}
+                >
+                  Get Guest Credentials
+                </button>
+              </form>
+              {loginError ? (
+                <div>
+                  <h4 className="text-red-600">{loginError}</h4>
+                </div>
+              ) : null}
+            </CardContent>
+            <CardFooter className="justify-center py-4 px-2 pt-1">
+              <p className="text-sm font-medium">Forgot Password?</p>
+            </CardFooter>
+          </Card>
+        </TabsContent>
         <TabsContent value="register">
           <Card>
             <CardHeader className="py-4 px-2">
@@ -114,40 +201,45 @@ const AuthPage = () => {
             </CardHeader>
             <CardContent className="py-4 px-2 pb-1">
               <form
-                action="/register"
                 method="POST"
                 className="w-[280px] mx-auto"
                 onSubmit={handleRegister}
               >
                 <input
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  id="username"
+                  name="username"
                   type="text"
                   placeholder="Username"
+                  value={registerFormData.username}
+                  onChange={handleRegisterForm}
                   className="block w-full rounded-sm p-2 mb-1 border"
-                  id="username"
                   autoComplete="username"
                   disabled={isRegSubmitting}
+                  required
                 />
                 <input
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  id="email"
+                  name="email"
                   type="email"
                   placeholder="Email"
+                  value={registerFormData.email}
+                  onChange={handleRegisterForm}
                   className="block w-full rounded-sm p-2 mb-1 border"
-                  id="email"
                   autoComplete="email"
                   disabled={isRegSubmitting}
+                  required
                 />
                 <input
-                  value={regPassword}
-                  onChange={(e) => setRegPassword(e.target.value)}
+                  id="registerPassword"
+                  name="password"
                   type="password"
                   placeholder="Password"
+                  value={registerFormData.password}
+                  onChange={handleRegisterForm}
                   className="block w-full rounded-sm p-2 mb-6 border"
-                  id="registerPassword"
                   autoComplete="new-password"
                   disabled={isRegSubmitting}
+                  required
                 />
                 <button
                   className="bg-orange-400 hover:bg-orange-500 text-white block mx-auto rounded-sm p-2 w-[90%]"
@@ -177,71 +269,6 @@ const AuthPage = () => {
                   Login
                 </Link>
               </p>
-            </CardFooter>
-          </Card>
-        </TabsContent>
-        <TabsContent value="login">
-          <Card>
-            <CardHeader className="py-4 px-2">
-              <CardTitle>Login</CardTitle>
-              {/* <CardDescription>
-                below to dive into Chat Guru 👨‍🏫
-              </CardDescription> */}
-            </CardHeader>
-            <CardContent className="py-4 px-2 pb-1">
-              <form
-                action="/login"
-                method="POST"
-                className="w-[280px] mx-auto"
-                onSubmit={handleLogin}
-              >
-                <input
-                  value={userPayload}
-                  onChange={(e) => setUserPayload(e.target.value)}
-                  type="text"
-                  placeholder="Username/Email"
-                  className="block w-full rounded-sm p-2 mb-1 border"
-                  id="userPayload"
-                  autoComplete="username"
-                  disabled={isLoginSubmitting}
-                />
-                <input
-                  value={loginPassword}
-                  onChange={(e) => setLoginPassword(e.target.value)}
-                  type="password"
-                  placeholder="Password"
-                  className="block w-full rounded-sm p-2 mb-6 border"
-                  id="loginPassword"
-                  autoComplete="current-password"
-                  disabled={isLoginSubmitting}
-                />
-                <button
-                  className="bg-orange-400 hover:bg-orange-500 text-white block mx-auto rounded-sm mb-1 p-2 w-[90%]"
-                  disabled={isLoginSubmitting}
-                  type="submit"
-                >
-                  Login
-                </button>
-                <button
-                  type="button"
-                  className="bg-green-400 hover:bg-green-500 text-white block mx-auto rounded-sm p-2 w-[90%]"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setUserPayload('guest');
-                    setLoginPassword('guest1234');
-                  }}
-                >
-                  Get Guest Credentials
-                </button>
-              </form>
-              {loginError ? (
-                <div>
-                  <h4 className="text-red-600">{loginError}</h4>
-                </div>
-              ) : null}
-            </CardContent>
-            <CardFooter className="justify-center py-4 px-2 pt-1">
-              <p className="text-sm font-medium">Forgot Password?</p>
             </CardFooter>
           </Card>
         </TabsContent>

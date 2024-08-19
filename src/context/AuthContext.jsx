@@ -6,6 +6,7 @@ import api from '../api/axios';
 export const AuthContext = createContext({
   authState: null,
   isLoading: true,
+  error: '',
   loginUser: () => {},
   logoutUser: () => {},
 });
@@ -15,23 +16,18 @@ export const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   const loginUser = async (credentials) => {
-    setIsLoading(true);
     try {
       const { data } = await axios.post(`/user/login`, credentials, {
         'Content-Type': 'application/json',
       });
       // console.log(data);
-
-      if (data.success) {
-        setAuthState({ user: data.user, isAuth: true });
-        localStorage.setItem('accessToken', data.accessToken);
-      } else {
-        console.error(data.message);
-      }
-    } catch (error) {
-      console.error('Login failed', error);
-    } finally {
+      setAuthState({ user: data.user, isAuth: true });
       setIsLoading(false);
+      localStorage.setItem('accessToken', data.accessToken);
+      return data;
+    } catch (error) {
+      console.error(error.response.data);
+      throw error;
     }
   };
 

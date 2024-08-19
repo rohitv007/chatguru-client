@@ -6,9 +6,8 @@ axios.defaults.baseURL = API_URL;
 axios.defaults.withCredentials = true;
 axios.interceptors.request.use((config) => {
   const token = localStorage.getItem('accessToken');
-  // console.log(token);
+  // console.log('AXIOS INT TOKEN', token);
   if (token) {
-    // console.log('AXIOS INT TOKEN', token);
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
