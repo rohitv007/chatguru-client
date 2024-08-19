@@ -1,11 +1,11 @@
-import { useContext, useMemo } from "react";
-import { ChatContext } from "../context/ChatContext";
-import { getRecipientDetails } from "../helpers/helpers";
-import { useAuth } from "../hooks/useAuth";
-import Avatar from "./Avatar";
-import { groupImage } from "../helpers/constants";
-import PropTypes from "prop-types";
-import { PanelViewContext } from "../context/PanelViewContext";
+import { useContext, useMemo } from 'react';
+import { ChatContext } from '../context/ChatContext';
+import { getRecipientDetails } from '../helpers/helpers';
+import { useAuth } from '../hooks/useAuth';
+import Avatar from './Avatar';
+import { groupImage } from '../helpers/constants';
+import PropTypes from 'prop-types';
+import { PanelViewContext } from '../context/PanelViewContext';
 
 const ChatList = ({ showSearch }) => {
   const { user } = useAuth();
@@ -22,7 +22,7 @@ const ChatList = ({ showSearch }) => {
   return (
     <div
       className={`p-2 overflow-y-auto max-h-[calc(100dvh-128px)] custom-scrollbar ${
-        showSearch && "hidden"
+        showSearch && 'hidden'
       }`}
     >
       {memoizedAllChats.map((chat) => {
@@ -34,8 +34,8 @@ const ChatList = ({ showSearch }) => {
             key={chat?._id}
             className={`hover:bg-gray-100 flex items-center gap-2 py-4 px-2 border-b border-gray-300 cursor-pointer ${
               width > 480 && chat?._id === currentChat._id
-                ? "bg-orange-100"
-                : "bg-none"
+                ? 'bg-orange-100'
+                : 'bg-none'
             }`}
             onClick={() => handleShowChat(chat)}
           >

@@ -37,9 +37,23 @@ const AuthPage = () => {
 
   const { loginUser } = useAuth();
 
+  const validateUsername = (username) => {
+    // Only alphanumeric characters, underscores and @
+    const regex = /^[a-zA-Z0-9_@]*$/;
+    return regex.test(username);
+  };
+
   const handleRegisterForm = (e) => {
     const { name, value } = e.target;
 
+    if (name === 'username' && !validateUsername(value)) {
+      setRegError(
+        'Username can only contain letters, numbers, underscores and @',
+      );
+      return;
+    }
+
+    setRegError('');
     setRegisterFormData({
       ...registerFormData,
       [name]: value,
@@ -57,6 +71,8 @@ const AuthPage = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setSuccessMessage('');
+    setRegError('');
     setIsRegSubmitting(true);
 
     const body = { ...registerFormData };
@@ -69,16 +85,25 @@ const AuthPage = () => {
       // console.log(res);
       if (res.data.success) {
         setSuccessMessage(res.data.message);
+        // Reset form
+        setRegisterFormData({
+          username: '',
+          email: '',
+          password: '',
+        });
+      } else {
+        setRegError('Registration failed. Please try again.');
       }
     } catch (err) {
       // console.log(err);
-      setIsRegSubmitting(false);
       if (err?.response?.data) {
         const errorMessage = err.response.data.message;
         setRegError(
           errorMessage ?? 'Oops! Something went wrong. Please try again later',
         );
       }
+    } finally {
+      setIsRegSubmitting(false);
     }
   };
 
@@ -180,11 +205,9 @@ const AuthPage = () => {
                   Get Guest Credentials
                 </button>
               </form>
-              {loginError ? (
-                <div>
-                  <h4 className="text-red-600">{loginError}</h4>
-                </div>
-              ) : null}
+              {loginError && (
+                <div className="text-sm my-2 text-red-600">{loginError}</div>
+              )}
             </CardContent>
             <CardFooter className="justify-center py-4 px-2 pt-1">
               <p className="text-sm font-medium">Forgot Password?</p>
@@ -209,12 +232,14 @@ const AuthPage = () => {
                   id="username"
                   name="username"
                   type="text"
-                  placeholder="Username"
+                  placeholder="Username (4-16 characters)"
                   value={registerFormData.username}
                   onChange={handleRegisterForm}
                   className="block w-full rounded-sm p-2 mb-1 border"
                   autoComplete="username"
                   disabled={isRegSubmitting}
+                  minLength={4}
+                  maxLength={16}
                   required
                 />
                 <input
@@ -249,18 +274,14 @@ const AuthPage = () => {
                   Register
                 </button>
               </form>
-              {successMessage ? (
-                <div>
-                  <h4 className="text-green-600">
-                    {successMessage} Please login to experience Chat Guru 👨‍🏫
-                  </h4>
+              {successMessage && (
+                <div className="text-sm my-2 text-green-600">
+                  {successMessage} Please login to experience Chat Guru 👨‍🏫
                 </div>
-              ) : null}
-              {regError ? (
-                <div>
-                  <h4 className="text-red-600">{regError}</h4>
-                </div>
-              ) : null}
+              )}
+              {regError && (
+                <div className="text-sm my-2 text-red-600">{regError}</div>
+              )}
             </CardContent>
             <CardFooter className="justify-center py-4 px-2 pt-1">
               <p className="text-sm font-medium">
