@@ -27,9 +27,9 @@ export const setMessagesByDate = (messages) => {
 
     let dateString;
     if (messageDate.toDateString() === today.toDateString()) {
-      dateString = "Today";
+      dateString = 'Today';
     } else if (messageDate.toDateString() === yesterday.toDateString()) {
-      dateString = "Yesterday";
+      dateString = 'Yesterday';
     } else if (messageYear === currentYear) {
       dateString = messageDate.toDateString().slice(0, -5); // Exclude the year
     } else {
@@ -46,5 +46,11 @@ export const setMessagesByDate = (messages) => {
 };
 
 export const setMessageTimeFormat = (value) => {
-  return value.toString().padStart(2, "0");
+  return value.toString().padStart(2, '0');
+};
+
+export const validateUsername = (username) => {
+  // Only alphanumeric characters, underscores and @
+  const regex = /^[a-zA-Z0-9@_]*$/;
+  return regex.test(username);
 };
