@@ -47,18 +47,20 @@ const AuthPage = () => {
 
     let userToastId;
 
-    if (name === 'username' && !validateUsername(value)) {
-      setRegError(true);
-      userToastId = toast.error(
-        `Username can only include alphanumeric characters, underscores, and the '@' symbol.`,
-        {
-          id: 'usernameToastId',
-          duration: Infinity,
-        },
-      );
-    } else {
-      setRegError(false);
-      toast.dismiss(userToastId);
+    if (name === 'username') {
+      if (!validateUsername(value)) {
+        setRegError(true);
+        userToastId = toast.error(
+          `Username can only include alphanumeric characters, underscores, and the '@' symbol.`,
+          {
+            id: 'usernameToastId',
+            duration: Infinity,
+          },
+        );
+      } else {
+        setRegError(false);
+        toast.dismiss(userToastId);
+      }
     }
   };
 
@@ -98,7 +100,7 @@ const AuthPage = () => {
         const errorObject = err.response.data.errors;
         // console.log(errorObject);
         const messages = Object.values(errorObject);
-        console.log(messages);
+        // console.log(messages);
 
         toast.error(
           messages.length > 0
@@ -273,15 +275,9 @@ const AuthPage = () => {
                   />
                   <button
                     className={`bg-orange-400 hover:bg-orange-500 text-white block mx-auto rounded-sm p-2 w-[90%] ${
-                      regError || !registerFormData.username
-                        ? 'opacity-50 cursor-not-allowed'
-                        : ''
+                      regError && 'opacity-50 cursor-not-allowed'
                     }`}
-                    disabled={
-                      isRegSubmitting ||
-                      !!regError ||
-                      !registerFormData.username
-                    }
+                    disabled={isRegSubmitting || regError}
                     type="submit"
                   >
                     Register

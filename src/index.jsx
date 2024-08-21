@@ -1,36 +1,25 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App.jsx";
-import "./index.css";
-import { BrowserRouter } from "react-router-dom";
-import { disableReactDevTools } from "@fvilers/disable-react-devtools";
-import { ChatProvider } from "./context/ChatContext.jsx";
-import { useAuth } from "./hooks/useAuth.js";
-import { AuthProvider } from "./context/AuthContext.jsx";
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App.jsx';
+import './index.css';
+import { disableReactDevTools } from '@fvilers/disable-react-devtools';
+import { AuthProvider } from './context/AuthContext.jsx';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
-if (import.meta.env.APP_NODE_ENV === "production") disableReactDevTools();
+if (import.meta.env.APP_NODE_ENV === 'production') disableReactDevTools();
 
-// eslint-disable-next-line react/prop-types, react-refresh/only-export-components
-const AuthWrapper = ({ children }) => {
-  const { user } = useAuth();
+// Define the router using createBrowserRouter
+const router = createBrowserRouter([
+  {
+    path: '/*',
+    element: <App />
+  }
+]);
 
-  if (!user) return children;
-
-  return (
-    <ChatProvider>
-      {children} {/* If user exists, render with ChatProvider */}
-    </ChatProvider>
-  );
-};
-
-ReactDOM.createRoot(document.getElementById("root")).render(
+ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <AuthProvider>
-        <AuthWrapper>
-          <App />
-        </AuthWrapper>
-      </AuthProvider>
-    </BrowserRouter>
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </React.StrictMode>
 );

@@ -1,45 +1,50 @@
-import { Navigate, Route, Routes } from "react-router-dom";
-import Home from "./pages/Home";
-import { useAuth } from "./hooks/useAuth";
-import NotFound from "./pages/NotFound";
-import AuthPage from "./pages/AuthPage";
-import ProtectedRoute from "./components/ProtectedRoutes";
+import { Navigate, Route, Routes } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import Home from './pages/Home';
+import { useAuth } from './hooks/useAuth';
+import NotFound from './pages/NotFound';
+import AuthPage from './pages/AuthPage';
+import ProtectedRoute from './components/ProtectedRoutes';
+import { ChatProvider } from './context/ChatContext.jsx';
+import Loader from './components/Loader';
+
+const AuthWrapper = ({ children }) => {
+  const { isAuth } = useAuth();
+
+  if (!isAuth) return children;
+  return <ChatProvider>{children}</ChatProvider>;
+};
 
 function App() {
   const { isAuth, isLoading } = useAuth();
-  // console.log(user, isAuth);
 
-  const Loading = () => (
-    <div className="bg-slate-50 flex items-center justify-center h-screen">
-      <l-momentum color={"orange"}></l-momentum>
-    </div>
-  );
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <ProtectedRoute>
-            <Home />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/login"
-        element={
-          isLoading ? (
-            <Loading />
-          ) : isAuth ? (
-            <Navigate to="/" replace />
-          ) : (
-            <AuthPage />
-          )
-        }
-      />
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <AuthWrapper>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/login"
+          element={isAuth ? <Navigate to="/" replace /> : <AuthPage />}
+        />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </AuthWrapper>
   );
 }
 
 export default App;
+
+AuthWrapper.propTypes = {
+  children: PropTypes.node.isRequired
+};

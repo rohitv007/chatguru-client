@@ -5,6 +5,7 @@ import ChatHeader from './ChatHeader';
 import { ChatContext } from '../context/ChatContext';
 import useSocket from '../hooks/useSocket';
 import api from '../api/axios';
+import Loader from './Loader';
 
 // memoized 'SingleChat' component
 const SingleChat = () => {
@@ -88,9 +89,7 @@ const SingleChat = () => {
   };
 
   return isLoading ? (
-    <div className="h-full bg-slate-50 flex flex-grow justify-center items-center">
-      <l-momentum color={'orange'}></l-momentum>
-    </div>
+    <Loader />
   ) : (
     <div className="chat__section h-full bg-slate-50 flex flex-grow relative">
       <ChatHeader chat={currentChat} />
