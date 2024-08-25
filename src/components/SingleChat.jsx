@@ -91,7 +91,7 @@ const SingleChat = () => {
   return isLoading ? (
     <Loader />
   ) : (
-    <div className="chat__section h-full bg-slate-50 flex flex-grow relative">
+    <div className="chat__section bg-slate-50 flex flex-grow relative">
       <ChatHeader chat={currentChat} />
       <div className="contact__chats overflow-auto scrollbar-hide absolute top-16 left-0 right-0 bottom-16 flex flex-col flex-grow">
         {Object.entries(setMessagesByDate(messages)).map(

@@ -19,7 +19,7 @@ const ListFooter = () => {
   };
 
   return (
-    <div className="p-3 h-fit flex justify-between items-center border-t-2 border-gray-300">
+    <div className="h-fit w-full p-4 flex justify-between items-center border-t-2 border-gray-300">
       <div className="flex gap-0.5">
         <div className="mt-0.5">
           <svg

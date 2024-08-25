@@ -43,14 +43,14 @@ const UserList = ({ showSearch, setShowSearch }) => {
     // console.log("FILTERED USERS", filteredUsers);
     // console.log("searching");
     const filtered = allUsers.filter((user) =>
-      user.username.toLowerCase().includes(searchValue.toLowerCase()),
+      user.username.toLowerCase().includes(searchValue.toLowerCase())
     );
     setFilteredUsers(filtered);
   }, [searchValue, allUsers]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounceSearch = useCallback(debounce(handleSearch, 300), [
-    handleSearch,
+    handleSearch
   ]);
 
   const selectUser = async (userId) => {
@@ -88,7 +88,7 @@ const UserList = ({ showSearch, setShowSearch }) => {
                 alt="icon"
               />
               <div className="text-xl font-semibold text-orange-500">
-                Chat&nbsp;Guru
+                ChatGuru
               </div>
             </div>
             <div className="flex">
@@ -188,5 +188,5 @@ export default UserList;
 
 UserList.propTypes = {
   showSearch: PropTypes.bool.isRequired,
-  setShowSearch: PropTypes.func.isRequired,
+  setShowSearch: PropTypes.func.isRequired
 };

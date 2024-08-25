@@ -4,14 +4,14 @@ import {
   Tabs,
   TabsContent,
   TabsList,
-  TabsTrigger,
+  TabsTrigger
 } from '@/shadcn_components/ui/tabs';
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
-  CardTitle,
+  CardTitle
 } from '@/shadcn_components/ui/card';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
@@ -25,7 +25,7 @@ const AuthPage = () => {
   const [registerFormData, setRegisterFormData] = useState({
     username: '',
     email: '',
-    password: '',
+    password: ''
   });
   const [isRegSubmitting, setIsRegSubmitting] = useState(false);
   const [regError, setRegError] = useState(false);
@@ -33,7 +33,7 @@ const AuthPage = () => {
   // login form data
   const [loginFormData, setLoginFormData] = useState({
     userInput: '',
-    password: '',
+    password: ''
   });
   const [isLoginSubmitting, setIsLoginSubmitting] = useState(false);
 
@@ -42,7 +42,7 @@ const AuthPage = () => {
 
     setRegisterFormData({
       ...registerFormData,
-      [name]: value,
+      [name]: value
     });
 
     let userToastId;
@@ -54,8 +54,8 @@ const AuthPage = () => {
           `Username can only include alphanumeric characters, underscores, and the '@' symbol.`,
           {
             id: 'usernameToastId',
-            duration: Infinity,
-          },
+            duration: Infinity
+          }
         );
       } else {
         setRegError(false);
@@ -73,7 +73,7 @@ const AuthPage = () => {
 
     const body = { ...registerFormData };
     const headers = {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     };
 
     try {
@@ -81,14 +81,14 @@ const AuthPage = () => {
       // console.log(data);
       if (data.success) {
         toast.success(data.message, {
-          duration: 5000,
+          duration: 5000
         });
         setRegError(false);
         // Reset form
         setRegisterFormData({
           username: '',
           email: '',
-          password: '',
+          password: ''
         });
       } else {
         setRegError(true);
@@ -105,7 +105,7 @@ const AuthPage = () => {
         toast.error(
           messages.length > 0
             ? messages[0]
-            : 'Oops! Something went wrong. Please try again shortly.',
+            : 'Oops! Something went wrong. Please try again shortly.'
         );
       }
     } finally {
@@ -118,7 +118,7 @@ const AuthPage = () => {
 
     setLoginFormData({
       ...loginFormData,
-      [name]: value,
+      [name]: value
     });
   };
 
@@ -133,12 +133,12 @@ const AuthPage = () => {
       // Reset form
       setLoginFormData({
         userInput: '',
-        password: '',
+        password: ''
       });
     } catch (error) {
       // console.log(error);
       toast.error(
-        error?.response?.data?.message || 'Login failed. Please try again.',
+        error?.response?.data?.message || 'Login failed. Please try again.'
       );
     } finally {
       setIsLoginSubmitting(false);
@@ -147,8 +147,8 @@ const AuthPage = () => {
 
   return (
     <>
-      <div className="bg-white h-screen flex items-center justify-center flex-col text-center overflow-auto custom-scrollbar">
-        <Tabs className="w-[400px]" defaultValue="login">
+      <div className="bg-white h-dvh flex items-center justify-center flex-col text-center overflow-auto custom-scrollbar">
+        <Tabs className="sm:w-[400px] w-fit" defaultValue="login">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger
               className="data-[state=active]:bg-orange-400 data-[state=active]:text-white"
@@ -211,7 +211,7 @@ const AuthPage = () => {
                     onClick={() => {
                       setLoginFormData({
                         userInput: 'guest',
-                        password: 'guest1234',
+                        password: 'guest1234'
                       });
                     }}
                   >
@@ -300,8 +300,8 @@ const AuthPage = () => {
         position="top-right"
         toastOptions={{
           style: {
-            textAlign: 'center',
-          },
+            textAlign: 'center'
+          }
         }}
       />
     </>

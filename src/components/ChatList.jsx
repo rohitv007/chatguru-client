@@ -30,9 +30,9 @@ const ChatList = ({ showSearch }) => {
         const { username, userImage } = getRecipientDetails(user, chat.users);
 
         return (
-          <div
+          <button
             key={chat?._id}
-            className={`hover:bg-gray-100 flex items-center gap-2 py-4 px-2 border-b border-gray-300 cursor-pointer ${
+            className={`w-full hover:bg-gray-100 flex items-center gap-2 py-4 px-2 border-b border-gray-300 cursor-pointer ${
               width > 480 && chat?._id === currentChat._id
                 ? 'bg-orange-100'
                 : 'bg-none'
@@ -47,7 +47,7 @@ const ChatList = ({ showSearch }) => {
               {/* If group-chat, then return chatName else return the opposite-user/sender */}
               {chat.isGroup ? chat.chatName : username}
             </span>
-          </div>
+          </button>
         );
       })}
     </div>
@@ -58,5 +58,5 @@ export default ChatList;
 
 ChatList.propTypes = {
   showSearch: PropTypes.bool.isRequired,
-  showCurrentChat: PropTypes.func,
+  showCurrentChat: PropTypes.func
 };

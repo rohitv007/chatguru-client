@@ -1,4 +1,4 @@
-// comparing 'Chat' users array with currently logged in user
+// comparing 'Chat' users array with currently logged-in user
 // Return - opposite user
 
 export const getRecipientDetails = (user, users) => {
