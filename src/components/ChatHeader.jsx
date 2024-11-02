@@ -14,9 +14,6 @@ const ChatHeader = ({ chat }) => {
   let recipient;
   if (!chat.isGroup) {
     recipient = getRecipientDetails(user, chat.users);
-    console.log('1-1 CHAT', recipient);
-  } else {
-    console.log('GROUP CHAT', chat);
   }
 
   const chatImage = chat.isGroup ? groupImage : recipient.avatarImage;

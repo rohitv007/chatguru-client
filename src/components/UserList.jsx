@@ -60,7 +60,7 @@ const UserList = ({ showSearch, setShowSearch }) => {
       // console.log("UserList chat data =>", data);
       selectCurrentChat(data);
       viewPanel();
-      console.log('create/access chat', data);
+      // console.log('create/access chat', data);
       socket.emit('join chat', data._id);
     } catch (error) {
       console.log('Error creating new chat\n', error);
@@ -92,7 +92,11 @@ const UserList = ({ showSearch, setShowSearch }) => {
               </div>
             </div>
             <div className="flex">
-              <button className="px-2" onClick={() => setShowSearch(true)}>
+              <button
+                className="px-2"
+                aria-label="Search"
+                onClick={() => setShowSearch(true)}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
