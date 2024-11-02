@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useContext } from 'react';
 import { useAuth } from '../hooks/useAuth';
-import { setMessagesByDate, setMessageTimeFormat } from '../helpers/helpers';
+import { formatTime, groupMessagesByDate } from '../helpers/helpers';
 import ChatHeader from './ChatHeader';
 import { ChatContext } from '../context/ChatContext';
 import useSocket from '../hooks/useSocket';
@@ -27,7 +27,7 @@ const SingleChat = () => {
     const fetchMessages = async () => {
       setIsLoading(true);
       try {
-        const { data } = await api.get(`/message/${chatId}`);
+        const { data } = await api.get(`/messages/${chatId}`);
         // console.log(data);
         setMessages(data);
       } catch (error) {
@@ -68,10 +68,10 @@ const SingleChat = () => {
         const newMessage = {
           chatId,
           content: messageContent,
-          file: selectedFile,
+          file: selectedFile
         };
 
-        const { data } = await api.post('/message', newMessage);
+        const { data } = await api.post('/messages', newMessage);
         // console.log(data);
         await socket.emit('sendMessage', data);
         setMessageContent('');
@@ -94,7 +94,7 @@ const SingleChat = () => {
     <div className="chat__section bg-slate-50 flex flex-grow relative">
       <ChatHeader chat={currentChat} />
       <div className="contact__chats overflow-auto scrollbar-hide absolute top-16 left-0 right-0 bottom-16 flex flex-col flex-grow">
-        {Object.entries(setMessagesByDate(messages)).map(
+        {Object.entries(groupMessagesByDate(messages)).map(
           ([date, messagesForDate]) => (
             <div key={date}>
               <div className="text-xs font-medium bg-orange-500 bg-clip-padding backdrop-filter backdrop-blur bg-opacity-60 shadow-lg w-max m-auto px-6 py-1 text-center text-white my-6 rounded-full">
@@ -117,23 +117,18 @@ const SingleChat = () => {
                         : 'bg-gray-400')
                     }
                   >
-                    <p className="max-w-96 inline-block p-2 pr-1 whitespace-pre-wrap break-words font-medium text-sm">
+                    <p className="max-w-96 inline-block p-2 pr-1 whitespace-pre-wrap break-words text-sm">
                       {message.content}
                     </p>
                     <p className="font-extralight text-[10px] p-1 pr-2 max-w-10">
-                      {setMessageTimeFormat(
-                        new Date(message.updatedAt).getHours(),
-                      )}
-                      :
-                      {setMessageTimeFormat(
-                        new Date(message.updatedAt).getMinutes(),
-                      )}
+                      {formatTime(new Date(message.updatedAt).getHours())}:
+                      {formatTime(new Date(message.updatedAt).getMinutes())}
                     </p>
                   </div>
                 </div>
               ))}
             </div>
-          ),
+          )
         )}
         <div ref={divUnderMessages}></div>
       </div>

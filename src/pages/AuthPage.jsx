@@ -16,7 +16,7 @@ import {
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { validateUsername } from '../helpers/helpers';
+import { isValidUsername } from '../helpers/helpers';
 
 const AuthPage = () => {
   const { loginUser } = useAuth();
@@ -48,7 +48,7 @@ const AuthPage = () => {
     let userToastId;
 
     if (name === 'username') {
-      if (!validateUsername(value)) {
+      if (!isValidUsername(value)) {
         setRegError(true);
         userToastId = toast.error(
           `Username can only include alphanumeric characters, underscores, and the '@' symbol.`,
@@ -77,7 +77,7 @@ const AuthPage = () => {
     };
 
     try {
-      const { data } = await axios.post(`/user/register`, body, { headers });
+      const { data } = await axios.post(`/users/register`, body, { headers });
       // console.log(data);
       if (data.success) {
         toast.success(data.message, {
@@ -148,7 +148,7 @@ const AuthPage = () => {
   return (
     <>
       <div className="bg-white h-dvh flex items-center justify-center flex-col text-center overflow-auto custom-scrollbar">
-        <Tabs className="sm:w-[400px] w-fit" defaultValue="login">
+        <Tabs className="sm:w-[400px] w-fit min-h-[400px]" defaultValue="login">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger
               className="data-[state=active]:bg-orange-400 data-[state=active]:text-white"

@@ -1,21 +1,19 @@
-// comparing 'Chat' users array with currently logged-in user
-// Return - opposite user
+import { defaultAvatar } from './constants';
 
-export const getRecipientDetails = (user, users) => {
-  // console.log(user);
-  // console.log(users);
+// Return details of the recipient of a chat with the given user
+export const getRecipientDetails = (currentUser, chatUsers) => {
+  const recipient = chatUsers.find((user) => user._id !== currentUser._id);
 
-  const recipient = user._id === users[0]._id ? users[1] : users[0];
-  const username = recipient.username;
-  const userImage = recipient.pic;
-
-  return { username, userImage };
+  return {
+    username: recipient.username,
+    avatarImage: recipient.avatarImage ?? defaultAvatar
+  };
 };
 
 // Group messages by date. Eg - today, yesterday,
-export const setMessagesByDate = (messages) => {
+export const groupMessagesByDate = (messages) => {
   const currentYear = new Date().getFullYear();
-  const groups = {};
+  const messageGroups = {};
 
   messages.forEach((message) => {
     const messageDate = new Date(message.updatedAt);
@@ -31,26 +29,27 @@ export const setMessagesByDate = (messages) => {
     } else if (messageDate.toDateString() === yesterday.toDateString()) {
       dateString = 'Yesterday';
     } else if (messageYear === currentYear) {
-      dateString = messageDate.toDateString().slice(0, -5); // Exclude the year
+      dateString = messageDate.toLocaleDateString('default', {
+        year: '2-digit'
+      });
     } else {
-      dateString = messageDate.toDateString();
+      dateString = messageDate.toLocaleDateString('default', {
+        year: 'numeric'
+      });
     }
 
-    if (!groups[dateString]) {
-      groups[dateString] = [];
+    if (!messageGroups[dateString]) {
+      messageGroups[dateString] = [];
     }
-    groups[dateString].push(message);
+    messageGroups[dateString].push(message);
   });
 
-  return groups;
+  return messageGroups;
 };
 
-export const setMessageTimeFormat = (value) => {
-  return value.toString().padStart(2, '0');
-};
+export const formatTime = (timeValue) => timeValue.toString().padStart(2, '0');
 
-export const validateUsername = (username) => {
-  // Only alphanumeric characters, underscores and @
-  const regex = /^[a-zA-Z0-9@_]*$/;
-  return regex.test(username);
+export const isValidUsername = (username) => {
+  const allowedCharsRegex = /^[a-zA-Z0-9@_]*$/;
+  return allowedCharsRegex.test(username);
 };

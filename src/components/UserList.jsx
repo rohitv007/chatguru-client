@@ -19,7 +19,7 @@ const UserList = ({ showSearch, setShowSearch }) => {
   useEffect(() => {
     async function getAllUsers() {
       try {
-        const { data } = await api.get('/user/all');
+        const { data } = await api.get('/users/all');
         // console.log("ALL USERS =>", data);
         setAllUsers(data);
       } catch (error) {
@@ -56,7 +56,7 @@ const UserList = ({ showSearch, setShowSearch }) => {
   const selectUser = async (userId) => {
     // console.log(`create/select chat with user - ${userId}`);
     try {
-      const { data } = await api.post('/chat', { userId });
+      const { data } = await api.post('/chats', { userId });
       // console.log("UserList chat data =>", data);
       selectCurrentChat(data);
       viewPanel();
@@ -77,7 +77,7 @@ const UserList = ({ showSearch, setShowSearch }) => {
   return (
     <>
       {!showSearch ? (
-        <>
+        <div className="border-b-2 border-gray-300">
           {/* Left Panel Header */}
           <div className="flex mx-1 my-2 px-1 py-2 items-end justify-between">
             <div className="flex items-center gap-1">
@@ -110,12 +110,11 @@ const UserList = ({ showSearch, setShowSearch }) => {
               </button>
             </div>
           </div>
-          <hr className="border border-gray-300" />
-        </>
+        </div>
       ) : (
         <>
           {/* Search Bar Input */}
-          <div className="flex py-4 px-2 justify-between items-center">
+          <div className="flex py-4 px-2 justify-between items-center border-b-2 border-gray-300">
             <div className="flex flex-1 items-center justify-normal rounded-full border-2 border-orange-500">
               <input
                 className="w-full px-4 py-2 rounded-full focus:border-orange-500 focus:outline-none"
@@ -162,21 +161,30 @@ const UserList = ({ showSearch, setShowSearch }) => {
               </svg>
             </button>
           </div>
-          <hr className="border border-gray-300" />
           {/* List of all users */}
           <div className="p-2 m-0 overflow-y-auto max-h-[calc(100dvh-128px)] custom-scrollbar">
-            {filteredUsers.map((user) => (
-              <div key={user._id}>
-                <button
-                  type="button"
-                  onClick={() => selectUser(user?._id)}
-                  className="w-full rounded-full shadow-md flex items-center gap-2 my-2 p-2 border border-gray-300 cursor-pointer"
-                >
-                  <Avatar userImage={user.pic} online={true} />
-                  <h3>{user.username}</h3>
-                </button>
+            {filteredUsers?.length === 0 ? (
+              <div className="h-full flex flex-col items-center justify-center">
+                <p className="text-center text-xl font-semibold">
+                  No users found
+                </p>
               </div>
-            ))}
+            ) : (
+              <>
+                {filteredUsers.map((user) => (
+                  <div key={user._id}>
+                    <button
+                      type="button"
+                      onClick={() => selectUser(user?._id)}
+                      className="w-full rounded-full shadow-md flex items-center gap-2 my-2 p-2 border border-gray-300 cursor-pointer"
+                    >
+                      <Avatar userImage={user.avatarImage} online={true} />
+                      <h3>{user.username}</h3>
+                    </button>
+                  </div>
+                ))}
+              </>
+            )}
           </div>
         </>
       )}

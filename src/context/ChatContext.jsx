@@ -6,7 +6,7 @@ import useSocket from '../hooks/useSocket';
 export const ChatContext = createContext({
   chats: [],
   currentChat: {},
-  selectCurrentChat: () => {},
+  selectCurrentChat: () => {}
 });
 
 export const ChatProvider = ({ children }) => {
@@ -17,7 +17,7 @@ export const ChatProvider = ({ children }) => {
   // set all chats
   const getAllChats = useCallback(async () => {
     try {
-      const { data } = await api.get('/chat');
+      const { data } = await api.get('/chats');
       setAllChats(data);
       // console.log('ALL CHATS =>', data);
     } catch (error) {
@@ -50,5 +50,5 @@ export const ChatProvider = ({ children }) => {
 };
 
 ChatProvider.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node.isRequired
 };

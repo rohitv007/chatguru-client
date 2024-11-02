@@ -8,7 +8,7 @@ export const AuthContext = createContext({
   isLoading: true,
   error: '',
   loginUser: () => {},
-  logoutUser: () => {},
+  logoutUser: () => {}
 });
 
 export const AuthProvider = ({ children }) => {
@@ -17,8 +17,8 @@ export const AuthProvider = ({ children }) => {
 
   const loginUser = async (credentials) => {
     try {
-      const { data } = await axios.post(`/user/login`, credentials, {
-        'Content-Type': 'application/json',
+      const { data } = await axios.post(`/users/login`, credentials, {
+        'Content-Type': 'application/json'
       });
       // console.log(data);
       setAuthState({ user: data.user, isAuth: true });
@@ -61,7 +61,11 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     checkAuthAccess();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [authState.isAuth]);
+
+  useEffect(() => {
+    // console.table(authState.user);
+  }, [authState.user]);
 
   return (
     <AuthContext.Provider
@@ -73,5 +77,5 @@ export const AuthProvider = ({ children }) => {
 };
 
 AuthProvider.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node.isRequired
 };

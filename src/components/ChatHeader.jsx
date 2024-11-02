@@ -1,21 +1,35 @@
-import { useContext } from "react";
-import PropTypes from "prop-types";
-import Avatar from "./Avatar";
-import { getRecipientDetails } from "../helpers/helpers";
-import { useAuth } from "../hooks/useAuth";
-import { PanelViewContext } from "../context/PanelViewContext";
+import { useContext } from 'react';
+import PropTypes from 'prop-types';
+import Avatar from './Avatar';
+import { getRecipientDetails } from '../helpers/helpers';
+import { useAuth } from '../hooks/useAuth';
+import { PanelViewContext } from '../context/PanelViewContext';
+import { groupImage } from '../helpers/constants';
 
 const ChatHeader = ({ chat }) => {
   const { user } = useAuth();
   const { width, hidePanel } = useContext(PanelViewContext);
   // console.log(chat);
 
-  const { username, userImage } = getRecipientDetails(user, chat?.users);
+  let recipient;
+  if (!chat.isGroup) {
+    recipient = getRecipientDetails(user, chat.users);
+    console.log('1-1 CHAT', recipient);
+  } else {
+    console.log('GROUP CHAT', chat);
+  }
+
+  const chatImage = chat.isGroup ? groupImage : recipient.avatarImage;
+  const chatName = chat.isGroup ? chat.chatName : recipient.username;
 
   return (
     <div className="flex items-center bg-orange-100 shadow-lg w-full px-2 h-16 z-10 gap-x-2">
       {width < 480 && (
-        <button className="flex items-center" onClick={hidePanel} aria-label="Go Back">
+        <button
+          className="flex items-center"
+          onClick={hidePanel}
+          aria-label="Go Back"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -34,10 +48,8 @@ const ChatHeader = ({ chat }) => {
         </button>
       )}
       <div className="flex items-center gap-x-2 ml-2">
-        <Avatar online={true} userImage={userImage} />
-        <span className="font-semibold">
-          {chat.isGroup ? chat.chatName : username}
-        </span>
+        <Avatar online={true} userImage={chatImage} isGroup={chat.isGroup} />
+        <span className="font-semibold">{chatName}</span>
       </div>
     </div>
   );
@@ -47,5 +59,5 @@ export default ChatHeader;
 
 ChatHeader.propTypes = {
   chat: PropTypes.object.isRequired,
-  hideCurrentChat: PropTypes.func,
+  hideCurrentChat: PropTypes.func
 };

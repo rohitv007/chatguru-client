@@ -21,35 +21,56 @@ const ChatList = ({ showSearch }) => {
 
   return (
     <div
-      className={`p-2 overflow-y-auto max-h-[calc(100dvh-128px)] custom-scrollbar ${
+      className={`px-2 py-0 overflow-y-auto max-h-screen custom-scrollbar ${
         showSearch && 'hidden'
       }`}
     >
-      {memoizedAllChats.map((chat) => {
-        // console.log(chat);
-        const { username, userImage } = getRecipientDetails(user, chat.users);
+      {memoizedAllChats?.length === 0 ? (
+        <div className="h-full flex flex-col items-center justify-center">
+          <p className="text-center text-xl font-semibold">
+            Search user to start a conversation
+          </p>
+        </div>
+      ) : (
+        <>
+          {memoizedAllChats.map((chat) => {
+            // console.log('CHAT', chat);
 
-        return (
-          <button
-            key={chat?._id}
-            className={`w-full hover:bg-gray-100 flex items-center gap-2 py-4 px-2 border-b border-gray-300 cursor-pointer ${
-              width > 480 && chat?._id === currentChat._id
-                ? 'bg-orange-100'
-                : 'bg-none'
-            }`}
-            onClick={() => handleShowChat(chat)}
-          >
-            <Avatar
-              online={true}
-              userImage={chat.isGroup ? groupImage : userImage}
-            />
-            <span className="text-xl">
-              {/* If group-chat, then return chatName else return the opposite-user/sender */}
-              {chat.isGroup ? chat.chatName : username}
-            </span>
-          </button>
-        );
-      })}
+            let recipient;
+            if (!chat.isGroup) {
+              recipient = getRecipientDetails(user, chat.users);
+              console.log('1-1 CHAT', recipient);
+            } else {
+              console.log('GROUP CHAT', chat);
+            }
+
+            const chatImage = chat.isGroup ? groupImage : recipient.avatarImage;
+            const chatName = chat.isGroup ? chat.chatName : recipient.username;
+
+            return (
+              <button
+                key={chat?._id}
+                className={`w-full hover:bg-gray-100 flex items-center gap-2 py-4 px-2 border-b border-gray-300 cursor-pointer ${
+                  width > 480 && chat?._id === currentChat._id
+                    ? 'bg-orange-100'
+                    : 'bg-none'
+                }`}
+                onClick={() => handleShowChat(chat)}
+              >
+                <Avatar
+                  online={true}
+                  userImage={chatImage}
+                  isGroup={chat.isGroup}
+                />
+                <span className="text-lg">
+                  {/* If group-chat, then return chatName else return the opposite-user/sender */}
+                  {chatName}
+                </span>
+              </button>
+            );
+          })}
+        </>
+      )}
     </div>
   );
 };
