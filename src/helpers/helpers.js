@@ -10,7 +10,8 @@ export const getRecipientDetails = (currentUser, chatUsers) => {
   };
 };
 
-// Group messages by date. Eg - today, yesterday,
+// Group messages by date
+// Eg - 'Today', 'Yesterday', 'Sun Jan 01' (if date in current year), 'Sun Jan 01 2XXX' (date not in current year)
 export const groupMessagesByDate = (messages) => {
   const currentYear = new Date().getFullYear();
   const messageGroups = {};
@@ -29,13 +30,10 @@ export const groupMessagesByDate = (messages) => {
     } else if (messageDate.toDateString() === yesterday.toDateString()) {
       dateString = 'Yesterday';
     } else if (messageYear === currentYear) {
-      dateString = messageDate.toLocaleDateString('default', {
-        year: '2-digit'
-      });
+      // Exclude the year
+      dateString = messageDate.toDateString().slice(0, -5);
     } else {
-      dateString = messageDate.toLocaleDateString('default', {
-        year: 'numeric'
-      });
+      dateString = messageDate.toDateString();
     }
 
     if (!messageGroups[dateString]) {
