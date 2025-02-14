@@ -6,6 +6,7 @@ import { ChatContext } from '../context/ChatContext.jsx';
 import { PanelViewContext } from '../context/PanelViewContext';
 import api from '../api/axios';
 import useSocket from '../hooks/useSocket';
+import EmptyState from './EmptyState';
 // import useSocket from '../hooks/useSocket';
 
 const UserList = ({ showSearch, setShowSearch }) => {
@@ -166,13 +167,9 @@ const UserList = ({ showSearch, setShowSearch }) => {
             </button>
           </div>
           {/* List of all users */}
-          <div className="p-2 m-0 overflow-y-auto max-h-[calc(100dvh-128px)] custom-scrollbar">
+          <div className="m-0 px-2 overflow-y-auto max-h-[calc(100dvh-128px)] custom-scrollbar">
             {filteredUsers?.length === 0 ? (
-              <div className="h-full flex flex-col items-center justify-center">
-                <p className="text-center text-xl font-semibold">
-                  No users found
-                </p>
-              </div>
+              <EmptyState message="No users found" />
             ) : (
               <>
                 {filteredUsers.map((user) => (

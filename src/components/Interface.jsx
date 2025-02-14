@@ -18,11 +18,13 @@ const Interface = () => {
     <div className="h-dvh flex flex-grow overflow-y-hidden custom-scrollbar">
       {/* Left panel - Chats and Users */}
       {(!isShowPanel || width >= 480) && (
-        <div className="grid grid-rows-[auto_1fr_auto] min-h-screen bg-white min-w-[300px] w-[480px] sm:w-2/5 md:w-1/3 lg:w-1/4 xl:w-1/5 border border-gray-400">
-          {/* display search-bar and users */}
-          <UserList showSearch={showSearch} setShowSearch={setShowSearch} />
-          {/* display chats */}
-          <ChatList showSearch={showSearch} />
+        <div className="flex flex-col min-h-dvh bg-white min-w-[300px] w-[480px] sm:w-2/5 md:w-1/3 lg:w-1/4 xl:w-1/5 border border-gray-400 overflow-hidden">
+          {/* display search-bar and users together with chats */}
+          <div className="overflow-y-auto flex-1">
+            <UserList showSearch={showSearch} setShowSearch={setShowSearch} />
+            {/* display chats */}
+            <ChatList showSearch={showSearch} />
+          </div>
           {/* display footer */}
           <ListFooter />
         </div>

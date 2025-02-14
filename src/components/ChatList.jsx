@@ -6,6 +6,7 @@ import Avatar from './Avatar';
 import { groupImage } from '../helpers/constants';
 import PropTypes from 'prop-types';
 import { PanelViewContext } from '../context/PanelViewContext';
+import EmptyState from './EmptyState';
 
 const ChatList = ({ showSearch }) => {
   const { user } = useAuth();
@@ -20,17 +21,9 @@ const ChatList = ({ showSearch }) => {
   };
 
   return (
-    <div
-      className={`px-2 py-0 overflow-y-auto max-h-screen custom-scrollbar ${
-        showSearch && 'hidden'
-      }`}
-    >
+    <div className={`${showSearch && 'hidden'}`}>
       {memoizedAllChats?.length === 0 ? (
-        <div className="h-full flex flex-col items-center justify-center">
-          <p className="text-center text-xl font-semibold">
-            Search user to start a conversation
-          </p>
-        </div>
+        <EmptyState message="Search user to start a conversation" />
       ) : (
         <>
           {memoizedAllChats.map((chat) => {
@@ -47,7 +40,7 @@ const ChatList = ({ showSearch }) => {
             return (
               <button
                 key={chat?._id}
-                className={`w-full hover:bg-gray-100 flex items-center gap-2 py-4 px-2 border-b border-gray-300 cursor-pointer ${
+                className={`w-full hover:bg-gray-100 flex items-center gap-2 m-0 p-4 border-b border-gray-300 cursor-pointer ${
                   width > 480 && chat?._id === currentChat._id
                     ? 'bg-orange-100'
                     : 'bg-none'

@@ -190,7 +190,7 @@ const ListFooter = () => {
 
   return (
     <>
-      <div className="w-full p-3.5 flex justify-between items-center border-t-2 border-gray-300">
+      <div className="w-full p-3.5 flex justify-between items-center border-t border-gray-300">
         <div
           className="flex items-center justify-start w-24 h-10 gap-x-1 cursor-pointer border-4 border-orange-400 rounded-full hover:bg-gray-200"
           onClick={openModal}
