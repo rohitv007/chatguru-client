@@ -8,7 +8,12 @@ const Home = () => {
   const { isAuth, isLoading } = useAuth();
   // console.log("HOME DATA", user);
 
-  if (isLoading) return <Loader />;
+  if (isLoading)
+    return (
+      <div className="h-dvh flex flex-col">
+        <Loader />
+      </div>
+    );
 
   if (!isAuth) return <Navigate to="/login" replace />;
 
