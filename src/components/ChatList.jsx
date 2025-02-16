@@ -64,7 +64,7 @@ const ChatList = ({ showSearch }) => {
                   isGroup={chat.isGroup}
                 />
                 <span className="text-lg">
-                  {/* If group-chat, then return chatName else return the opposite-user/sender */}
+                  {/* If its a group-chat, then show chat's name else show the sender (user on the other side) */}
                   {chatName}
                 </span>
               </button>
