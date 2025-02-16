@@ -7,12 +7,14 @@ import { PanelViewContext } from '../context/PanelViewContext';
 import api from '../api/axios';
 import useSocket from '../hooks/useSocket';
 import EmptyState from './EmptyState';
+import Loader from './Loader';
 // import useSocket from '../hooks/useSocket';
 
 const UserList = ({ showSearch, setShowSearch }) => {
   const [allUsers, setAllUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchValue, setSearchValue] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
   const { selectCurrentChat } = useContext(ChatContext);
   const { viewPanel } = useContext(PanelViewContext);
   const { socket } = useSocket();
@@ -23,8 +25,10 @@ const UserList = ({ showSearch, setShowSearch }) => {
         const { data } = await api.get('/users/all');
         // console.log("ALL USERS =>", data);
         setAllUsers(data);
+        setIsLoading(false);
       } catch (error) {
         console.error('Error fetching users:', error);
+        setIsLoading(false);
       }
     }
     getAllUsers();
@@ -167,12 +171,14 @@ const UserList = ({ showSearch, setShowSearch }) => {
             </button>
           </div>
           {/* List of all users */}
-          <div className="m-0 px-2 overflow-y-auto max-h-[calc(100dvh-128px)] custom-scrollbar">
-            {filteredUsers?.length === 0 ? (
+          <div className="h-dvh flex flex-col m-0 px-2 overflow-y-auto custom-scrollbar">
+            {isLoading ? (
+              <Loader />
+            ) : filteredUsers?.length === 0 ? (
               <EmptyState message="No users found" />
             ) : (
               <>
-                {filteredUsers.map((user) => (
+                {filteredUsers?.map((user) => (
                   <div key={user._id}>
                     <button
                       type="button"

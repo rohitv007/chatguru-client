@@ -6,7 +6,12 @@ import Loader from './Loader';
 const ProtectedRoute = ({ children }) => {
   const { isAuth, isLoading } = useAuth();
 
-  if (isLoading) return <Loader />;
+  if (isLoading)
+    return (
+      <div className="h-dvh flex flex-col">
+        <Loader />
+      </div>
+    );
 
   if (!isAuth) return <Navigate to="/login" replace />;
 
@@ -16,5 +21,5 @@ const ProtectedRoute = ({ children }) => {
 export default ProtectedRoute;
 
 ProtectedRoute.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node.isRequired
 };

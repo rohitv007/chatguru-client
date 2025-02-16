@@ -1,4 +1,4 @@
-import { useContext, useMemo } from 'react';
+import { useContext, useMemo, useState, useEffect } from 'react';
 import { ChatContext } from '../context/ChatContext';
 import { getRecipientDetails } from '../helpers/helpers';
 import { useAuth } from '../hooks/useAuth';
@@ -7,13 +7,22 @@ import { groupImage } from '../helpers/constants';
 import PropTypes from 'prop-types';
 import { PanelViewContext } from '../context/PanelViewContext';
 import EmptyState from './EmptyState';
+import Loader from './Loader';
 
 const ChatList = ({ showSearch }) => {
   const { user } = useAuth();
   const { chats, currentChat, selectCurrentChat } = useContext(ChatContext);
   const { width, viewPanel } = useContext(PanelViewContext);
+  const [isLoading, setIsLoading] = useState(true);
+
   // memoize all chats
   const memoizedAllChats = useMemo(() => chats, [chats]);
+
+  useEffect(() => {
+    if (chats.length > 0) {
+      setIsLoading(false);
+    }
+  }, [chats]);
 
   const handleShowChat = (chat) => {
     selectCurrentChat(chat);
@@ -21,8 +30,10 @@ const ChatList = ({ showSearch }) => {
   };
 
   return (
-    <div className={`${showSearch && 'hidden'}`}>
-      {memoizedAllChats?.length === 0 ? (
+    <div className={`h-dvh flex flex-col ${showSearch && 'hidden'}`}>
+      {isLoading ? (
+        <Loader />
+      ) : memoizedAllChats?.length === 0 ? (
         <EmptyState message="Search user to start a conversation" />
       ) : (
         <>
@@ -53,7 +64,7 @@ const ChatList = ({ showSearch }) => {
                   isGroup={chat.isGroup}
                 />
                 <span className="text-lg">
-                  {/* If group-chat, then return chatName else return the opposite-user/sender */}
+                  {/* If its a group-chat, then show chat's name else show the sender (user on the other side) */}
                   {chatName}
                 </span>
               </button>

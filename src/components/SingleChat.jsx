@@ -93,7 +93,7 @@ const SingleChat = () => {
   ) : (
     <div className="chat__section bg-slate-50 flex flex-grow relative">
       <ChatHeader chat={currentChat} />
-      <div className="contact__chats overflow-auto scrollbar-hide absolute top-16 left-0 right-0 bottom-16 flex flex-col flex-grow">
+      <div className="contact__chats overflow-auto hide-scrollbar absolute top-16 left-0 right-0 bottom-16 flex flex-col flex-grow">
         {Object.entries(groupMessagesByDate(messages)).map(
           ([date, messagesForDate]) => (
             <div key={date}>
@@ -167,7 +167,7 @@ const SingleChat = () => {
           </label>
           <textarea
             form="messageBox"
-            className="hide-scrollbar flex-1 h-11 px-4 py-2 rounded-full resize-none text-gray-600 bg-blue-50 outline-none placeholder-gray-600"
+            className="w-full field-sizing-content rounded-full hide-scrollbar outline-none resize-none h-10 px-4 py-2 text-gray-600 bg-blue-50 placeholder-gray-600"
             id="textInput"
             name="textInput"
             value={messageContent}

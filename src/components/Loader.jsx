@@ -1,7 +1,7 @@
 import { LoaderCircle } from 'lucide-react';
 
 const Loader = () => (
-  <div className="h-dvh bg-slate-50 flex flex-grow items-center justify-center">
+  <div className="h-dvh bg-slate-50 flex flex-1 items-center justify-center">
     <LoaderCircle
       strokeWidth={1.25}
       size={70}
