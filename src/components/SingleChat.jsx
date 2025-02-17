@@ -167,7 +167,7 @@ const SingleChat = () => {
           </label>
           <textarea
             form="messageBox"
-            className="w-full field-sizing-content rounded-full hide-scrollbar outline-none resize-none h-10 px-4 py-2 text-gray-600 bg-blue-50 placeholder-gray-600"
+            className="w-full field-sizing-content rounded-full hide-scrollbar outline-none resize-none h-10 px-4 py-2 text-gray-600 bg-blue-100"
             id="textInput"
             name="textInput"
             value={messageContent}
@@ -179,7 +179,7 @@ const SingleChat = () => {
               }
             }}
             autoComplete="off"
-            placeholder="Type your message here"
+            // placeholder="Type your message here"
             autoFocus
           />
           <button
