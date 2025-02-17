@@ -31,7 +31,7 @@ const Interface = () => {
       )}
       {/* Right panel - Chat Messages */}
       {isShowPanel && (
-        <div className="flex flex-grow min-w-[350px]">
+        <div className="flex flex-grow min-w-[300px]">
           {Object.keys(currentChat).length > 0 ? (
             <SingleChat />
           ) : (

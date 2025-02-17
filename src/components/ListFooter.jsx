@@ -16,7 +16,7 @@ import { defaultAvatar } from '../helpers/constants';
 import Avatar from './Avatar';
 
 const ListFooter = () => {
-  const { user, logoutUser } = useAuth();
+  const { user, logoutUser, updateUser } = useAuth();
   const { isOpen, openModal, closeModal } = useModal();
   const fileInputRef = useRef(null);
 
@@ -109,8 +109,9 @@ const ListFooter = () => {
       });
 
       if (data.success) {
-        toast.success('Profile updated successfully');
+        updateUser(data.user);
         closeModal();
+        toast.success('Profile updated successfully!');
       } else {
         throw new Error('Failed to update profile');
       }
@@ -214,7 +215,6 @@ const ListFooter = () => {
           className="flex flex-col gap-4 p-4 bg-white"
         >
           {renderProfileImage()}
-
           <input
             type="text"
             name="username"

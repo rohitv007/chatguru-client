@@ -8,7 +8,8 @@ export const AuthContext = createContext({
   isLoading: true,
   error: '',
   loginUser: () => {},
-  logoutUser: () => {}
+  logoutUser: () => {},
+  updateUser: () => {}
 });
 
 export const AuthProvider = ({ children }) => {
@@ -58,6 +59,13 @@ export const AuthProvider = ({ children }) => {
     setIsLoading(false);
   };
 
+  const updateUser = (updatedUser) => {
+    setAuthState((prev) => ({
+      ...prev,
+      user: { ...updatedUser }
+    }));
+  };
+
   useEffect(() => {
     checkAuthAccess();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -69,7 +77,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ ...authState, isLoading, loginUser, logoutUser }}
+      value={{ ...authState, isLoading, loginUser, logoutUser, updateUser }}
     >
       {children}
     </AuthContext.Provider>
