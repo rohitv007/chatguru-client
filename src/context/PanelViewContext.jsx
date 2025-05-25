@@ -1,11 +1,12 @@
-import { createContext, useEffect, useState } from "react";
-import PropTypes from "prop-types";
+import { createContext, useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { debounce } from 'lodash';
 
 export const PanelViewContext = createContext({
   isShowPanel: false,
   width: 0,
   viewPanel: () => {},
-  hidePanel: () => {},
+  hidePanel: () => {}
 });
 
 export const PanelViewContextProvider = ({ children }) => {
@@ -15,20 +16,19 @@ export const PanelViewContextProvider = ({ children }) => {
   const viewPanel = () => setIsShowPanel(true);
   const hidePanel = () => setIsShowPanel(false);
 
-  const handleResize = () => setWidth(window.innerWidth);
-
   useEffect(() => {
-    window.addEventListener("resize", handleResize);
+    const handleResize = debounce(() => {
+      const newWidth = window.innerWidth;
+      setWidth(newWidth);
+      setIsShowPanel(newWidth >= 480);
+    }, 250);
 
+    window.addEventListener('resize', handleResize);
     return () => {
-      window.removeEventListener("resize", handleResize);
+      handleResize.cancel(); // Clean up debounce
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
-
-  useEffect(() => {
-    if (width < 480) setIsShowPanel(false);
-    else setIsShowPanel(true);
-  }, [width]);
 
   return (
     <PanelViewContext.Provider
@@ -40,5 +40,5 @@ export const PanelViewContextProvider = ({ children }) => {
 };
 
 PanelViewContextProvider.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node.isRequired
 };
