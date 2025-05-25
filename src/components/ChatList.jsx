@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState, useEffect } from 'react';
+import { useContext, useMemo } from 'react';
 import { ChatContext } from '../context/ChatContext';
 import { getRecipientDetails } from '../helpers/helpers';
 import { useAuth } from '../hooks/useAuth';
@@ -11,19 +11,11 @@ import Loader from './Loader';
 
 const ChatList = ({ showSearch }) => {
   const { user } = useAuth();
-  const { chats, currentChat, selectCurrentChat } = useContext(ChatContext);
+  const { chats, currentChat, selectCurrentChat, isChatsLoading } = useContext(ChatContext);
   const { width, viewPanel } = useContext(PanelViewContext);
-  const [isLoading, setIsLoading] = useState(true);
 
   // memoize all chats
   const memoizedAllChats = useMemo(() => chats, [chats]);
-
-  useEffect(() => {
-    if (chats.length > 0) {
-      setIsLoading(false);
-    }
-  }, [chats]);
-
   const handleShowChat = (chat) => {
     selectCurrentChat(chat);
     viewPanel();
@@ -31,7 +23,7 @@ const ChatList = ({ showSearch }) => {
 
   return (
     <div className={`h-dvh flex flex-col ${showSearch && 'hidden'}`}>
-      {isLoading ? (
+      {isChatsLoading ? (
         <Loader />
       ) : memoizedAllChats?.length === 0 ? (
         <EmptyState message="Search user to start a conversation" />

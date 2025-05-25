@@ -6,22 +6,27 @@ import useSocket from '../hooks/useSocket';
 export const ChatContext = createContext({
   chats: [],
   currentChat: {},
+  isChatsLoading: true,
   selectCurrentChat: () => {}
 });
 
 export const ChatProvider = ({ children }) => {
   const [chats, setAllChats] = useState([]);
   const [currentChat, setCurrentChat] = useState({});
+  const [isChatsLoading, setIsChatsLoading] = useState(true);
   const { socket } = useSocket();
 
   // set all chats
   const getAllChats = useCallback(async () => {
     try {
+      setIsChatsLoading(true);
       const { data } = await api.get('/chats');
       setAllChats(data);
       // console.log('ALL CHATS =>', data);
     } catch (error) {
       console.error('Error fetching chats:', error);
+    } finally {
+      setIsChatsLoading(false);
     }
   }, []);
 
@@ -43,7 +48,9 @@ export const ChatProvider = ({ children }) => {
   }, []);
 
   return (
-    <ChatContext.Provider value={{ chats, currentChat, selectCurrentChat }}>
+    <ChatContext.Provider
+      value={{ chats, currentChat, isChatsLoading, selectCurrentChat }}
+    >
       {children}
     </ChatContext.Provider>
   );
