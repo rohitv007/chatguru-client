@@ -193,16 +193,16 @@ const ListFooter = () => {
     <>
       <div className="w-full p-3.5 flex justify-between items-center border-t border-gray-300">
         <div
-          className="flex items-center justify-start w-24 h-10 gap-x-1 cursor-pointer border-4 border-orange-400 rounded-full hover:bg-gray-200"
+          className="flex items-center justify-start w-auto max-w-[200px] h-10 gap-x-1 cursor-pointer border-4 border-orange-400 rounded-full hover:bg-gray-200 pr-1"
           onClick={openModal}
         >
           <Avatar online={true} userImage={user.avatarImage} isGroup={false} />
-          <span className="text-center font-bold self-center">
+          <span className="text-center font-bold self-center truncate">
             {user?.username}
           </span>
         </div>
         <button
-          className="bg-orange-500 hover:bg-orange-400 text-white font-bold py-1 px-3 rounded"
+          className="bg-orange-500 hover:bg-orange-400 text-white font-bold py-1 px-3 rounded ml-2"
           onClick={handleLogout}
         >
           Logout

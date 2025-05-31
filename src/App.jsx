@@ -7,6 +7,7 @@ import AuthPage from './pages/AuthPage';
 import ProtectedRoute from './components/ProtectedRoutes';
 import { ChatProvider } from './context/ChatContext.jsx';
 import Loader from './components/Loader';
+import RenewPassword from './pages/RenewPassword';
 
 const AuthWrapper = ({ children }) => {
   const { isAuth } = useAuth();
@@ -36,6 +37,10 @@ function App() {
         <Route
           path="/login"
           element={isAuth ? <Navigate to="/" replace /> : <AuthPage />}
+        />
+        <Route
+          path="/reset-password"
+          element={isAuth ? <Navigate to="/" replace /> : <RenewPassword />}
         />
         <Route path="*" element={<NotFound />} />
       </Routes>

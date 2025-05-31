@@ -36,6 +36,8 @@ const AuthPage = () => {
     password: ''
   });
   const [isLoginSubmitting, setIsLoginSubmitting] = useState(false);
+  const [lastRequestTimes, setLastRequestTimes] = useState({});
+  const [isForgotPasswordLoading, setIsForgotPasswordLoading] = useState(false);
 
   const handleRegisterForm = (e) => {
     const { name, value } = e.target;
@@ -145,6 +147,50 @@ const AuthPage = () => {
     }
   };
 
+  const handleForgotPassword = async () => {
+    const email = loginFormData.userInput?.toLowerCase();
+
+    if (!email) {
+      toast.error('Please enter your email to reset password');
+      return;
+    }
+
+    // Check if a minute has passed since last request for this specific email
+    const now = Date.now();
+    const lastRequestTime = lastRequestTimes[email] || 0;
+    const timeElapsed = now - lastRequestTime;
+    const oneMinute = 60 * 1000;
+
+    if (timeElapsed < oneMinute) {
+      toast.error(
+        `Please wait sometime before requesting again for this email`
+      );
+      return;
+    }
+
+    setIsForgotPasswordLoading(true);
+    try {
+      // Update last request time for this specific email
+      setLastRequestTimes((prev) => ({
+        ...prev,
+        [email]: now
+      }));
+
+      const res = await axios.post('/users/forgot-password', { email });
+
+      if (res.data.success) {
+        toast.success(res.data.message || 'Reset link sent to your email');
+      }
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        'Failed to send reset link. Please try again later';
+      toast.error(message);
+    } finally {
+      setIsForgotPasswordLoading(false);
+    }
+  };
+
   return (
     <>
       <div className="bg-white h-dvh flex items-center justify-center flex-col text-center overflow-auto custom-scrollbar">
@@ -205,22 +251,33 @@ const AuthPage = () => {
                   >
                     Login
                   </button>
-                  <button
-                    type="button"
-                    className="bg-green-400 hover:bg-green-500 text-white block mx-auto rounded-sm p-2 w-[90%]"
-                    onClick={() => {
-                      setLoginFormData({
-                        userInput: 'guest',
-                        password: 'guest1234'
-                      });
-                    }}
-                  >
-                    Get Guest Credentials
-                  </button>
+                  {import.meta.env.APP_ENV === 'development' && (
+                    <button
+                      type="button"
+                      className="bg-green-400 hover:bg-green-500 text-white block mx-auto rounded-sm p-2 w-[90%]"
+                      onClick={() => {
+                        setLoginFormData({
+                          userInput: 'guest',
+                          password: 'guest1234'
+                        });
+                      }}
+                    >
+                      Get Guest Credentials
+                    </button>
+                  )}
                 </form>
               </CardContent>
               <CardFooter className="justify-center py-4 px-2 pt-1">
-                <p className="text-sm font-medium">Forgot Password?</p>
+                <button
+                  onClick={handleForgotPassword}
+                  disabled={isForgotPasswordLoading}
+                  className="flex items-center gap-2"
+                >
+                  <span>Forgot Password?</span>
+                  {isForgotPasswordLoading && (
+                    <div className="w-4 h-4 border-2 border-orange-400 border-t-transparent rounded-full animate-spin"></div>
+                  )}
+                </button>
               </CardFooter>
             </Card>
           </TabsContent>
