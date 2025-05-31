@@ -1,3 +1,4 @@
+import { Analytics } from '@vercel/analytics/react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Home from './pages/Home';
@@ -44,6 +45,7 @@ function App() {
         />
         <Route path="*" element={<NotFound />} />
       </Routes>
+      <Analytics />
     </AuthWrapper>
   );
 }
