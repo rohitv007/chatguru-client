@@ -8,6 +8,7 @@ import {
   CardFooter,
   CardContent
 } from '../../shadcn_components/ui/card';
+import { LoaderCircle } from 'lucide-react';
 
 const RenewPassword = () => {
   const [searchParams] = useSearchParams();
@@ -121,7 +122,11 @@ const RenewPassword = () => {
                   isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
               >
-                {isSubmitting ? 'Resetting...' : 'Reset Password'}
+                {isSubmitting ? (
+                  <LoaderCircle className="w-5 h-5 animate-spin mx-auto text-white" />
+                ) : (
+                  'Reset Password'
+                )}
               </button>
             </form>
           </CardContent>

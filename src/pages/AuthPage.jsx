@@ -17,6 +17,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { isValidUsername } from '../helpers/helpers';
+import { LoaderCircle } from 'lucide-react';
 
 const AuthPage = () => {
   const { loginUser } = useAuth();
@@ -245,11 +246,15 @@ const AuthPage = () => {
                     required
                   />
                   <button
-                    className="bg-orange-400 hover:bg-orange-500 text-white block mx-auto rounded-sm mb-1 p-2 w-[90%]"
+                    className="bg-orange-400 hover:bg-orange-500 text-white block mx-auto rounded-sm mb-1 p-2 w-[90%] min-h-[40px]"
                     disabled={isLoginSubmitting}
                     type="submit"
                   >
-                    Login
+                    {isLoginSubmitting ? (
+                      <LoaderCircle className="w-5 h-5 animate-spin mx-auto text-white" />
+                    ) : (
+                      'Login'
+                    )}
                   </button>
                   {import.meta.env.APP_ENV === 'development' && (
                     <button
@@ -331,13 +336,17 @@ const AuthPage = () => {
                     required
                   />
                   <button
-                    className={`bg-orange-400 hover:bg-orange-500 text-white block mx-auto rounded-sm p-2 w-[90%] ${
+                    className={`bg-orange-400 hover:bg-orange-500 text-white block mx-auto rounded-sm p-2 w-[90%] min-h-[40px] ${
                       regError && 'opacity-50 cursor-not-allowed'
                     }`}
                     disabled={isRegSubmitting || regError}
                     type="submit"
                   >
-                    Register
+                    {isRegSubmitting ? (
+                      <LoaderCircle className="w-5 h-5 animate-spin mx-auto text-white" />
+                    ) : (
+                      'Register'
+                    )}
                   </button>
                 </form>
               </CardContent>
